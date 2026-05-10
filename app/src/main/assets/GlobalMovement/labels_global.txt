@@ -1,0 +1,10 @@
+Pukulan2Kanan
+Pukulan2Kiri
+Pukulan4Kanan
+Pukulan4Kiri
+Tangkisan1Kanan
+Tangkisan1Kiri
+Tangkisan3Kanan
+Tangkisan3Kiri
+Tendangan2Kanan
+Tendangan2Kiri

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Dark Mode Colors — hanya override semantic colors.
+    Raw colors (biru_utama, abu_gelap, dll) tetap di values/colors.xml
+    dan tidak perlu diulang di sini.
+-->
+<resources>
+
+    <!-- Latar utama fragment / halaman (gelap) -->
+    <color name="latar_app">#FF0A1628</color>
+    <!-- Permukaan kartu / card dark -->
+    <color name="permukaan_kartu">#FF162236</color>
+    <!-- Header tetap biru (konsisten di dua mode) -->
+    <color name="latar_header">#FF0070CC</color>
+    <!-- Teks utama di dark mode: putih -->
+    <color name="teks_utama">#FFFFFFFF</color>
+    <!-- Teks sekunder di dark mode: abu biru muda -->
+    <color name="teks_sekunder">#FFB0BEC5</color>
+    <!-- Teks hint di dark mode: lebih redup -->
+    <color name="teks_hint">#FF78909C</color>
+    <!-- Garis pembatas di dark mode: subtle -->
+    <color name="garis_pembatas">#FF1E2A3E</color>
+    <!-- Latar bottom nav di dark mode -->
+    <color name="latar_nav">#FF111D2E</color>
+    <!-- Icon nav aktif: tetap biru cerah -->
+    <color name="ikon_nav_aktif">#FF0090FF</color>
+    <!-- Icon nav tidak aktif: lebih redup -->
+    <color name="ikon_nav_nonaktif">#FF546E7A</color>
+
+    <!-- Override putih_pudar ke dark background -->
+    <color name="putih_pudar">#FF0A1628</color>
+    <!-- Override putih (latar kartu putih) ke dark -->
+    <color name="putih">#FF162236</color>
+    <!-- Override abu_gelap ke putih di dark mode (untuk teks heading) -->
+    <color name="abu_gelap">#FFFFFFFF</color>
+    <!-- Override abu_sedang ke lebih terang di dark mode -->
+    <color name="abu_sedang">#FFB0BEC5</color>
+    <!-- Override abu_terang -->
+    <color name="abu_terang">#FF78909C</color>
+    <!-- Override abu_sangat_terang ke subtle dark border -->
+    <color name="abu_sangat_terang">#FF1E2A3E</color>
+
+</resources>

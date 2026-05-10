@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/putih_pudar"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbarHasil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/biru_utama"
+        android:paddingStart="4dp"
+        android:paddingEnd="16dp"
+        app:navigationIcon="@drawable/ic_panah_kiri"
+        app:navigationIconTint="@color/putih"
+        app:title="@string/hasil_judul"
+        app:titleCentered="false"
+        app:titleTextColor="@color/putih" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_gradien_biru" />
+
+                    <View
+                        android:layout_width="220dp"
+                        android:layout_height="220dp"
+                        android:layout_gravity="top|end"
+                        android:layout_marginTop="-60dp"
+                        android:layout_marginEnd="-60dp"
+                        android:alpha="0.12"
+                        android:background="@drawable/bg_lingkaran_putih" />
+
+                    <!-- Layer 3: Decorative Circle Glow (Bottom Left) -->
+                    <View
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:layout_gravity="bottom|start"
+                        android:layout_marginStart="-40dp"
+                        android:layout_marginBottom="-30dp"
+                        android:alpha="0.08"
+                        android:background="@drawable/bg_lingkaran_putih" />
+
+                    <!-- Layer 4: Toolbar -->
+
+
+                    <!-- Layer 5: Score Circle + Info (centered) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <!-- Score Ring (FrameLayout for layering) -->
+                        <FrameLayout
+                            android:layout_width="140dp"
+                            android:layout_height="140dp">
+
+                            <!-- Outer ring -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="140dp"
+                                android:layout_height="140dp"
+                                app:cardBackgroundColor="#22FFFFFF"
+                                app:cardCornerRadius="70dp"
+                                app:cardElevation="0dp"
+                                app:strokeColor="#55FFFFFF"
+                                app:strokeWidth="3dp" />
+
+                            <!-- Inner Score Content -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/txtSkorAngka"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="0"
+                                    android:textColor="@color/putih"
+                                    android:textSize="48sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:letterSpacing="0.2"
+                                    android:text="SKOR"
+                                    android:textColor="#AAFFFFFF"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+                        </FrameLayout>
+
+                        <!-- Movement name & category badge row -->
+                        <TextView
+                            android:id="@+id/txtKategori"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:background="@drawable/bg_badge_putih"
+                            android:fontFamily="@font/poppins"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="5dp"
+                            android:textColor="@color/biru_gelap"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtNamaGerakan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:fontFamily="@font/poppins"
+                            android:textColor="#CCFFFFFF"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <!-- ─── Foto Pose Terbaik ─── -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/kartuFotoTerbaik"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="18dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="6dp">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/imgFotoTerbaik"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="Foto pose terbaik"
+                            android:scaleType="centerCrop" />
+
+                        <!-- Gradient overlay bottom -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="80dp"
+                            android:layout_gravity="bottom"
+                            android:background="@drawable/bg_overlay_gelap" />
+
+                        <!-- Label badge bottom-left -->
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|start"
+                            android:layout_margin="14dp"
+                            android:background="@drawable/bg_badge_putih"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins"
+                                android:text="📸 Pose Terbaik"
+                                android:textColor="@color/biru_gelap"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+                    </FrameLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- ─── Header Seksi: Detail Fitur ─── -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_kartu"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <View
+                            android:layout_width="5dp"
+                            android:layout_height="22dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="@drawable/bg_accent_bar" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/poppins"
+                            android:text="@string/hasil_detail_fitur"
+                            android:textColor="@color/abu_gelap"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <!-- Chip kanan -->
+                    </LinearLayout>
+                </FrameLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvDetailFitur"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dp"
+                    android:nestedScrollingEnabled="false" />
+
+                <!-- ─── Header Seksi: Feedback ─── -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_kartu"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <View
+                            android:layout_width="5dp"
+                            android:layout_height="22dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="@drawable/bg_accent_bar" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/poppins"
+                            android:text="@string/hasil_feedback"
+                            android:textColor="@color/abu_gelap"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <!-- Chip kanan -->
+                    </LinearLayout>
+                </FrameLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvFeedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dp"
+                    android:nestedScrollingEnabled="false" />
+
+            </LinearLayout>
+            <FrameLayout
+                android:id="@+id/layoutBottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/putih"
+                android:elevation="8dp">
+
+                <!-- Top divider line -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#1A000000" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginEnd="18dp"
+                    android:layout_marginBottom="14dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnUlangi"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/poppins"
+                        android:maxLines="1"
+                        android:text="@string/btn_ulangi"
+                        android:textColor="@color/biru_utama"
+                        app:cornerRadius="26dp"
+                        app:strokeColor="@color/biru_utama" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnKembali"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/biru_utama"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/poppins"
+                        android:maxLines="1"
+                        android:text="@string/btn_kembali"
+                        android:textColor="@color/putih"
+                        app:cornerRadius="26dp" />
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

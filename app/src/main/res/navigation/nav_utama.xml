@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_utama"
+    app:startDestination="@id/nav_beranda">
+
+    <fragment
+        android:id="@+id/nav_beranda"
+        android:name="com.el.silatpro.ui.beranda.FragmenBeranda"
+        android:label="@string/nav_beranda"
+        tools:layout="@layout/fragmen_beranda" />
+
+    <fragment
+        android:id="@+id/nav_riwayat"
+        android:name="com.el.silatpro.ui.riwayat.FragmenRiwayat"
+        android:label="@string/nav_riwayat"
+        tools:layout="@layout/fragmen_riwayat" />
+
+</navigation>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background chip: biru saat dipilih, abu terang saat tidak dipilih -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/biru_utama" android:state_checked="true" />
+    <item android:color="#EEEEEE" />
+</selector>

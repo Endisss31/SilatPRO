@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "pose_model": "YOLOv8n-Pose COCO 17 keypoints",
+  "score_categories": [
+    {
+      "min_score": 85,
+      "label": "sangat baik"
+    },
+    {
+      "min_score": 70,
+      "label": "baik"
+    },
+    {
+      "min_score": 55,
+      "label": "cukup"
+    },
+    {
+      "min_score": 0,
+      "label": "kurang"
+    }
+  ],
+  "features": [
+    "angle_left_arm",
+    "angle_right_arm",
+    "angle_left_leg",
+    "angle_right_leg",
+    "angle_left_waist",
+    "angle_right_waist",
+    "dist_feet_normalized",
+    "dist_hands_normalized"
+  ],
+  "movement": {
+    "id": "tendangan_2_kanan",
+    "label": "Tendangan 2 Kanan",
+    "parent_movement": "tendangan_2",
+    "side": "kanan",
+    "description": "Model acuan untuk gerakan tendangan 2 sisi kanan.",
+    "sample_count": 2,
+    "source_movements": [
+      "TENDANGAN2KANAN-1",
+      "TENDANGAN2KANAN-2"
+    ],
+    "features": {
+      "angle_left_arm": {
+        "target": 11.315,
+        "min": 1.27,
+        "max": 21.36,
+        "std": 10.045,
+        "tolerance": 15.0675
+      },
+      "angle_right_arm": {
+        "target": 173.205,
+        "min": 171.54,
+        "max": 174.87,
+        "std": 1.665,
+        "tolerance": 8.0
+      },
+      "angle_left_leg": {
+        "target": 176.955,
+        "min": 174.47,
+        "max": 179.44,
+        "std": 2.485,
+        "tolerance": 8.0
+      },
+      "angle_right_leg": {
+        "target": 158.42,
+        "min": 157.07,
+        "max": 159.77,
+        "std": 1.35,
+        "tolerance": 8.0
+      },
+      "angle_left_waist": {
+        "target": 105.39,
+        "min": 104.96,
+        "max": 105.82,
+        "std": 0.43,
+        "tolerance": 8.0
+      },
+      "angle_right_waist": {
+        "target": 170.115,
+        "min": 163.43,
+        "max": 176.8,
+        "std": 6.685,
+        "tolerance": 10.0275
+      },
+      "dist_feet_normalized": {
+        "target": 2.7475,
+        "min": 2.581,
+        "max": 2.914,
+        "std": 0.1665,
+        "tolerance": 0.25
+      },
+      "dist_hands_normalized": {
+        "target": 2.356,
+        "min": 2.143,
+        "max": 2.569,
+        "std": 0.213,
+        "tolerance": 0.3195
+      }
+    },
+    "feedback_rules": [
+      {
+        "feature": "angle_left_arm",
+        "low": "Tangan kiri kurang siaga — angkat sedikit ke posisi pertahanan.",
+        "high": "Tangan kiri terlalu tinggi — turunkan ke posisi pertahanan yang natural.",
+        "ok": "Posisi tangan kiri pertahanan sudah sesuai.",
+        "target": 11.315,
+        "tolerance": 15.0675
+      },
+      {
+        "feature": "angle_right_arm",
+        "low": "Tangan kanan kurang siaga — angkat ke posisi pertahanan.",
+        "high": "Tangan kanan terlalu tinggi dari posisi pertahanan.",
+        "ok": "Posisi tangan kanan pertahanan sudah sesuai.",
+        "target": 173.205,
+        "tolerance": 8.0
+      },
+      {
+        "feature": "angle_left_leg",
+        "low": "Kaki tumpuan kiri terlalu menekuk — luruskan untuk keseimbangan lebih baik.",
+        "high": "Kaki tumpuan kiri terlalu lurus — tekuk sedikit untuk menjaga keseimbangan.",
+        "ok": "Kaki tumpuan kiri sudah sesuai.",
+        "target": 176.955,
+        "tolerance": 8.0
+      },
+      {
+        "feature": "angle_right_leg",
+        "low": "Sudut tendangan kanan kurang tinggi — arahkan tendangan sejajar dengan dada lawan.",
+        "high": "Sudut tendangan kanan terlalu tinggi — turunkan arah tendangan agar sejajar dada lawan.",
+        "ok": "Arah tendangan kanan sudah sejajar dengan dada lawan.",
+        "target": 158.42,
+        "tolerance": 8.0
+      }
+    ]
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "pose_model": "YOLOv8n-Pose COCO 17 keypoints",
+  "score_categories": [
+    {
+      "min_score": 85,
+      "label": "sangat baik"
+    },
+    {
+      "min_score": 70,
+      "label": "baik"
+    },
+    {
+      "min_score": 55,
+      "label": "cukup"
+    },
+    {
+      "min_score": 0,
+      "label": "kurang"
+    }
+  ],
+  "features": [
+    "angle_left_arm",
+    "angle_right_arm",
+    "angle_left_leg",
+    "angle_right_leg",
+    "angle_left_waist",
+    "angle_right_waist",
+    "dist_feet_normalized",
+    "dist_hands_normalized"
+  ],
+  "movement": {
+    "id": "pukulan_2_kanan",
+    "label": "Pukulan 2 Kanan",
+    "parent_movement": "pukulan_2",
+    "side": "kanan",
+    "description": "Model acuan untuk gerakan pukulan 2 sisi kanan.",
+    "sample_count": 4,
+    "source_movements": [
+      "PUKULAN2KANAN-1",
+      "PUKULAN2KANAN-2",
+      "PUKULAN2KANAN-3",
+      "PUKULAN2KANAN-4"
+    ],
+    "features": {
+      "angle_left_arm": {
+        "target": 137.7275,
+        "min": 127.24,
+        "max": 144.3,
+        "std": 7.106,
+        "tolerance": 10.659
+      },
+      "angle_right_arm": {
+        "target": 169.925,
+        "min": 165.01,
+        "max": 176.0,
+        "std": 3.9287,
+        "tolerance": 8.0
+      },
+      "angle_left_leg": {
+        "target": 143.12,
+        "min": 139.07,
+        "max": 149.32,
+        "std": 3.7801,
+        "tolerance": 8.0
+      },
+      "angle_right_leg": {
+        "target": 156.575,
+        "min": 154.34,
+        "max": 160.33,
+        "std": 2.2632,
+        "tolerance": 8.0
+      },
+      "angle_left_waist": {
+        "target": 122.2925,
+        "min": 118.9,
+        "max": 124.77,
+        "std": 2.1631,
+        "tolerance": 8.0
+      },
+      "angle_right_waist": {
+        "target": 122.325,
+        "min": 119.55,
+        "max": 128.1,
+        "std": 3.3769,
+        "tolerance": 8.0
+      },
+      "dist_feet_normalized": {
+        "target": 3.1792,
+        "min": 2.99,
+        "max": 3.446,
+        "std": 0.1665,
+        "tolerance": 0.25
+      },
+      "dist_hands_normalized": {
+        "target": 2.9078,
+        "min": 2.761,
+        "max": 3.104,
+        "std": 0.1241,
+        "tolerance": 0.25
+      }
+    },
+    "feedback_rules": [
+      {
+        "feature": "angle_left_arm",
+        "low": "Tangan kiri kurang menekuk — pastikan berada di samping pinggang sebagai penyeimbang.",
+        "high": "Tangan kiri terlalu terbuka — tarik ke samping pinggang dalam posisi siap.",
+        "ok": "Posisi tangan kiri sebagai penyeimbang sudah sesuai.",
+        "target": 137.7275,
+        "tolerance": 10.659
+      },
+      {
+        "feature": "angle_right_arm",
+        "low": "Pukulan kanan kurang lurus — luruskan lengan ke arah depan sejajar bahu.",
+        "high": "Lengan kanan terlalu menekuk — dorong lebih ke depan agar pukulan lurus.",
+        "ok": "Arah pukulan kanan sudah lurus ke depan sejajar bahu.",
+        "target": 175,
+        "tolerance": 8.0
+      },
+      {
+        "feature": "angle_left_leg",
+        "low": "Kuda-kuda kaki kiri terlalu menekuk — luruskan sedikit untuk keseimbangan.",
+        "high": "Kuda-kuda kaki kiri terlalu lurus — tekuk sedikit untuk kuda-kuda stabil.",
+        "ok": "Kuda-kuda kaki kiri sudah sesuai.",
+        "target": 143.12,
+        "tolerance": 8.0
+      },
+      {
+        "feature": "angle_right_leg",
+        "low": "Kuda-kuda kaki kanan terlalu menekuk — luruskan sedikit.",
+        "high": "Kuda-kuda kaki kanan terlalu lurus — tekuk sedikit.",
+        "ok": "Kuda-kuda kaki kanan sudah sesuai.",
+        "target": 156.575,
+        "tolerance": 8.0
+      },
+      {
+        "feature": "dist_feet_normalized",
+        "low": "Kuda-kuda terlalu rapat — lebarkan posisi kaki untuk keseimbangan.",
+        "high": "Kuda-kuda terlalu lebar — rapatkan sedikit posisi kaki.",
+        "ok": "Lebar kuda-kuda sudah sesuai acuan.",
+        "target": 3.1792,
+        "tolerance": 0.25
+      }
+    ]
+  }
+}

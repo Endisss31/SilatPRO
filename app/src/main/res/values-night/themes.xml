@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ── BASE DARK THEME — override Base.Theme.SilatPRO ── -->
+    <style name="Base.Theme.SilatPRO" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/biru_utama</item>
+        <item name="colorPrimaryDark">@color/biru_gelap</item>
+        <item name="colorAccent">@color/biru_terang</item>
+        <item name="colorOnPrimary">@color/putih</item>
+        <item name="colorSecondary">@color/biru_terang</item>
+        <item name="colorOnSecondary">@color/putih</item>
+        <!-- Semantic — akan ambil dari values-night/colors.xml -->
+        <item name="colorSurface">@color/permukaan_kartu</item>
+        <item name="colorOnSurface">@color/teks_utama</item>
+        <item name="android:colorBackground">@color/latar_app</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">@color/latar_nav</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- Splash dark mode -->
+    <style name="Theme.SilatPRO.Splash" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+</resources>

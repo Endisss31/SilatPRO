@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "model_type": "nearest_centroid_classifier",
+  "created_from": "MODELS_OUTPUT_RT peak pose features",
+  "features": [
+    "angle_left_arm",
+    "angle_right_arm",
+    "angle_left_leg",
+    "angle_right_leg",
+    "angle_left_waist",
+    "angle_right_waist",
+    "dist_feet_normalized",
+    "dist_hands_normalized"
+  ],
+  "normalization": {
+    "mean": [
+      125.45381,
+      133.66,
+      145.034286,
+      149.114762,
+      120.893333,
+      123.420952,
+      3.152714,
+      2.107476
+    ],
+    "std": [
+      56.623371,
+      55.761862,
+      12.372285,
+      9.605531,
+      16.266138,
+      17.861496,
+      0.381157,
+      0.742732
+    ]
+  },
+  "classes": [
+    {
+      "id": "pukulan2kanan",
+      "movement_class": "PUKULAN2KANAN",
+      "label": "PUKULAN2 Kanan",
+      "category": "PUKULAN",
+      "side": "kanan",
+      "sample_count": 4,
+      "source_movements": [
+        "PUKULAN2KANAN-1",
+        "PUKULAN2KANAN-2",
+        "PUKULAN2KANAN-3",
+        "PUKULAN2KANAN-4"
+      ],
+      "centroid": [
+        0.21676,
+        0.650355,
+        -0.154724,
+        0.776661,
+        0.086017,
+        -0.061358,
+        0.06962,
+        1.077473
+      ]
+    },
+    {
+      "id": "pukulan2kiri",
+      "movement_class": "PUKULAN2KIRI",
+      "label": "PUKULAN2 Kiri",
+      "category": "PUKULAN",
+      "side": "kiri",
+      "sample_count": 3,
+      "source_movements": [
+        "PUKULAN2KIRI-1",
+        "PUKULAN2KIRI-2",
+        "PUKULAN2KIRI-3"
+      ],
+      "centroid": [
+        0.725075,
+        0.160145,
+        0.107152,
+        -0.537339,
+        -0.206359,
+        -0.217654,
+        -0.331571,
+        0.723712
+      ]
+    },
+    {
+      "id": "pukulan4kanan",
+      "movement_class": "PUKULAN4KANAN",
+      "label": "PUKULAN4 Kanan",
+      "category": "PUKULAN",
+      "side": "kanan",
+      "sample_count": 4,
+      "source_movements": [
+        "PUKULAN4KANAN-1",
+        "PUKULAN4KANAN-2",
+        "PUKULAN4KANAN-3",
+        "PUKULAN4KANAN-5"
+      ],
+      "centroid": [
+        0.389348,
+        -1.079546,
+        -0.771829,
+        -0.644656,
+        -0.379059,
+        -0.50687,
+        0.810128,
+        -1.439585
+      ]
+    },
+    {
+      "id": "pukulan4kiri",
+      "movement_class": "PUKULAN4KIRI",
+      "label": "PUKULAN4 Kiri",
+      "category": "PUKULAN",
+      "side": "kiri",
+      "sample_count": 2,
+      "source_movements": [
+        "PUKULAN4KIRI-2",
+        "PUKULAN4KIRI-3"
+      ],
+      "centroid": [
+        -1.226946,
+        0.818212,
+        -0.885389,
+        -0.291994,
+        -0.407185,
+        -0.336811,
+        0.626477,
+        -1.40155
+      ]
+    },
+    {
+      "id": "tangkisan1kanan",
+      "movement_class": "TANGKISAN1KANAN",
+      "label": "TANGKISAN1 Kanan",
+      "category": "TANGKISAN",
+      "side": "kanan",
+      "sample_count": 1,
+      "source_movements": [
+        "TANGKISAN1KANAN-1"
+      ],
+      "centroid": [
+        0.609752,
+        -1.280086,
+        -0.734245,
+        -0.759433,
+        -0.417022,
+        -0.369563,
+        -0.154042,
+        0.218819
+      ]
+    },
+    {
+      "id": "tangkisan1kiri",
+      "movement_class": "TANGKISAN1KIRI",
+      "label": "TANGKISAN1 Kiri",
+      "category": "TANGKISAN",
+      "side": "kiri",
+      "sample_count": 1,
+      "source_movements": [
+        "TANGKISAN1KIRI-1"
+      ],
+      "centroid": [
+        -1.250434,
+        0.333382,
+        -0.391543,
+        -1.247694,
+        -0.397964,
+        -0.602466,
+        -0.091075,
+        0.065332
+      ]
+    },
+    {
+      "id": "tangkisan3kanan",
+      "movement_class": "TANGKISAN3KANAN",
+      "label": "TANGKISAN3 Kanan",
+      "category": "TANGKISAN",
+      "side": "kanan",
+      "sample_count": 1,
+      "source_movements": [
+        "TANGKISAN3KANAN-1"
+      ],
+      "centroid": [
+        0.848169,
+        0.373015,
+        -0.109461,
+        -0.784419,
+        -0.553502,
+        -0.174171,
+        1.842511,
+        0.817959
+      ]
+    },
+    {
+      "id": "tangkisan3kiri",
+      "movement_class": "TANGKISAN3KIRI",
+      "label": "TANGKISAN3 Kiri",
+      "category": "TANGKISAN",
+      "side": "kiri",
+      "sample_count": 1,
+      "source_movements": [
+        "TANGKISAN3KIRI-1"
+      ],
+      "centroid": [
+        0.047616,
+        0.812563,
+        -0.473177,
+        -1.452784,
+        0.039141,
+        -0.810736,
+        0.863912,
+        0.564839
+      ]
+    },
+    {
+      "id": "tendangan2kanan",
+      "movement_class": "TENDANGAN2KANAN",
+      "label": "TENDANGAN2 Kanan",
+      "category": "TENDANGAN",
+      "side": "kanan",
+      "sample_count": 2,
+      "source_movements": [
+        "TENDANGAN2KANAN-1",
+        "TENDANGAN2KANAN-2"
+      ],
+      "centroid": [
+        -2.015754,
+        0.709176,
+        2.580018,
+        0.968737,
+        -0.953105,
+        2.614229,
+        -1.063116,
+        0.334608
+      ]
+    },
+    {
+      "id": "tendangan2kiri",
+      "movement_class": "TENDANGAN2KIRI",
+      "label": "TENDANGAN2 Kiri",
+      "category": "TENDANGAN",
+      "side": "kiri",
+      "sample_count": 2,
+      "source_movements": [
+        "TENDANGAN2KIRI-1",
+        "TENDANGAN2KIRI-2"
+      ],
+      "centroid": [
+        0.81532,
+        -1.02866,
+        0.851962,
+        1.987421,
+        2.920587,
+        0.163987,
+        -2.056145,
+        -0.127874
+      ]
+    }
+  ]
+}

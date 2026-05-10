@@ -1,0 +1,138 @@
+@startuml
+title Class Diagram Sistem Evaluasi Gerakan Pencak Silat SilatPRO
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam packageStyle rectangle
+
+class Pesilat {
+  - idPesilat: String
+  - nama: String
+  - usia: Int
+  - tingkat: String
+  + pilihGerakan(): void
+  + mulaiEvaluasi(): void
+  + lihatRiwayat(): void
+}
+
+package "Core System (Sistem Utama)" {
+  class AplikasiSilatPRO {
+    - idAplikasi: String
+    - namaAplikasi: String
+    - versi: String
+    + tampilkanBeranda(): void
+    + tampilkanDetailGerakan(idGerakan: String): void
+    + bukaKamera(): void
+    + tampilkanHasil(hasil: HasilEvaluasi): void
+  }
+
+  class GerakanSilat {
+    - idGerakan: String
+    - namaGerakan: String
+    - kategori: String
+    - deskripsi: String
+    - sisiGerakan: String
+    + getDetailGerakan(): String
+    + getStandarGerakan(): String
+  }
+
+  class EvaluasiKamera {
+    - idEvaluasi: String
+    - modeInput: String
+    - statusEvaluasi: String
+    - waktuMulai: DateTime
+    - waktuSelesai: DateTime
+    + mulaiKamera(): void
+    + ambilFrame(): Frame
+    + prosesFrame(frame: Frame): HasilEvaluasi
+    + selesaiEvaluasi(): void
+  }
+
+  class ModulAI {
+    - modelPose: String
+    - jumlahKeypoint: Int
+    - jumlahFitur: Int
+    + deteksiPose(frame: Frame): Keypoint[]
+    + ekstrakKeypoint(frame: Frame): Keypoint[]
+    + normalisasiKeypoint(keypoint: Keypoint[]): Float[]
+    + hitungSudut(keypoint: Keypoint[]): Float[]
+    + evaluasiGerakan(label: String, sudut: Float[]): HasilEvaluasi
+  }
+
+  class Keypoint {
+    - idKeypoint: Int
+    - namaKeypoint: String
+    - x: Float
+    - y: Float
+    - confidence: Float
+    + getKoordinat(): Float[]
+    + validasiConfidence(): Boolean
+  }
+
+  class HasilEvaluasi {
+    - idHasil: String
+    - labelPrediksi: String
+    - skor: Float
+    - kategori: String
+    - feedback: String
+    - tanggalEvaluasi: DateTime
+    + hitungSkor(): Float
+    + tentukanKategori(): String
+    + tampilkanFeedback(): String
+  }
+
+  class RiwayatLatihan {
+    - idRiwayat: String
+    - tanggalLatihan: DateTime
+    - namaGerakan: String
+    - skor: Float
+    - kategori: String
+    + simpanRiwayat(hasil: HasilEvaluasi): void
+    + tampilkanDaftarRiwayat(): List<RiwayatLatihan>
+    + tampilkanDetailRiwayat(idRiwayat: String): HasilEvaluasi
+  }
+
+  class DatabaseLokal {
+    - namaDatabase: String
+    - versiDatabase: Int
+    - namaTabel: String
+    + insertRiwayat(riwayat: RiwayatLatihan): void
+    + getRiwayat(): List<RiwayatLatihan>
+    + getDetailRiwayat(idRiwayat: String): HasilEvaluasi
+    + deleteRiwayat(idRiwayat: String): void
+  }
+}
+
+package "Fitur Tambahan (Ekstensi Pilihan)" <<Folder>> {
+  class ActivityKlasifikasiGerakan {
+    + mulaiKameraKlasifikasi(): void
+    + tebakGerakanSekarang(): void
+  }
+  
+  class MesinKlasifikasi {
+    - modelMLP: String
+    + muatModelMLP(): void
+    + klasifikasiMLP(fitur: Float[]): String
+  }
+}
+
+' Relasi Sistem Utama
+Pesilat "1" --> "1" AplikasiSilatPRO : menggunakan
+AplikasiSilatPRO "1" --> "1..*" GerakanSilat : menampilkan
+AplikasiSilatPRO "1" --> "0..*" RiwayatLatihan : mengelola
+AplikasiSilatPRO "1" --> "1" EvaluasiKamera : menjalankan
+
+EvaluasiKamera "1" --> "1" GerakanSilat : mengevaluasi
+EvaluasiKamera "1" --> "1" ModulAI : memproses
+ModulAI "1" --> "17" Keypoint : menghasilkan
+ModulAI "1" --> "1" HasilEvaluasi : membentuk
+
+HasilEvaluasi "1" --> "1" GerakanSilat : berdasarkan
+RiwayatLatihan "1" --> "1" HasilEvaluasi : menyimpan
+DatabaseLokal "1" --> "0..*" RiwayatLatihan : menyimpan
+
+' Relasi Fitur Tambahan
+Pesilat "1" ..> "1" ActivityKlasifikasiGerakan : mengeksplor (opsional)
+ActivityKlasifikasiGerakan "1" --> "1" MesinKlasifikasi : menggunakan
+MesinKlasifikasi "1" ..> "1" ModulAI : menggunakan fitur pose
+@enduml

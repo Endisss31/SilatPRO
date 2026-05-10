@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_beranda"
+        android:icon="@drawable/ic_beranda"
+        android:title="@string/nav_beranda" />
+    <item
+        android:id="@+id/nav_deteksi"/>
+    <item
+        android:id="@+id/nav_riwayat"
+        android:icon="@drawable/ic_riwayat"
+        android:title="@string/nav_riwayat" />
+</menu>

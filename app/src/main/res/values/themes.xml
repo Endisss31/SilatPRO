@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ── BASE LIGHT THEME ── -->
+    <style name="Base.Theme.SilatPRO" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/biru_utama</item>
+        <item name="colorPrimaryDark">@color/biru_gelap</item>
+        <item name="colorAccent">@color/biru_terang</item>
+        <item name="colorOnPrimary">@color/putih</item>
+        <item name="colorSecondary">@color/biru_terang</item>
+        <item name="colorOnSecondary">@color/putih</item>
+        <item name="colorSurface">@color/permukaan_kartu</item>
+        <item name="colorOnSurface">@color/teks_utama</item>
+        <item name="android:colorBackground">@color/latar_app</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">@color/latar_nav</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="Theme.SilatPRO" parent="Base.Theme.SilatPRO" />
+
+    <style name="ShapeAppearance_SilatPRO_FabCircle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- Splash Theme -->
+    <style name="Theme.SilatPRO.Splash" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- Fullscreen Camera Theme -->
+    <style name="Theme.SilatPRO.Kamera" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- Toolbar Title Style -->
+    <style name="TextAppearance.Toolbar.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+</resources>

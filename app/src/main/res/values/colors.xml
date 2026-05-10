@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Palette -->
+    <color name="biru_utama">#FF0090FF</color>
+    <color name="biru_gelap">#FF0070CC</color>
+    <color name="biru_terang">#FF33A6FF</color>
+    <color name="biru_sangat_terang">#FFE6F3FF</color>
+    <color name="biru_transparan">#330090FF</color>
+
+    <!-- Neutral -->
+    <color name="putih">#FFFFFFFF</color>
+    <color name="putih_pudar">#FFF5F7FA</color>
+    <color name="hitam">#FF000000</color>
+    <color name="abu_gelap">#FF1A1A2E</color>
+    <color name="abu_sedang">#FF666666</color>
+    <color name="abu_terang">#FF999999</color>
+    <color name="abu_sangat_terang">#FFE0E0E0</color>
+
+    <!-- Dark Mode Raw Colors -->
+    <color name="gelap_latar">#FF0A1628</color>
+    <color name="gelap_permukaan">#FF111D2E</color>
+    <color name="gelap_kartu">#FF162236</color>
+    <color name="gelap_teks_utama">#FFFFFFFF</color>
+    <color name="gelap_teks_sekunder">#FFB0BEC5</color>
+
+    <!-- Skor Kategori -->
+    <color name="skor_sangat_baik">#FF4CAF50</color>
+    <color name="skor_baik">#FF8BC34A</color>
+    <color name="skor_cukup">#FFFF9800</color>
+    <color name="skor_kurang">#FFF44336</color>
+
+    <!-- Skeleton Overlay -->
+    <color name="skeleton_garis">#FF00E676</color>
+    <color name="skeleton_titik">#FFFF5252</color>
+    <color name="skeleton_titik_rendah">#80FF5252</color>
+
+    <!-- Legacy (tetap untuk kompatibilitas) -->
+    <color name="kartu_latar_terang">#FFFFFFFF</color>
+    <color name="kartu_latar_gelap">#FF162236</color>
+    <color name="teks_primer_terang">#FF1A1A2E</color>
+    <color name="teks_primer_gelap">#FFFFFFFF</color>
+    <color name="teks_sekunder_terang">#FF666666</color>
+    <color name="teks_sekunder_gelap">#FFB0BEC5</color>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- SEMANTIC COLORS — gunakan ini di layout XML     -->
+    <!-- Di-override otomatis oleh values-night/colors  -->
+    <!-- ═══════════════════════════════════════════════ -->
+
+    <!-- Latar utama halaman / fragment background -->
+    <color name="latar_app">#FFF5F7FA</color>
+    <!-- Permukaan kartu / MaterialCardView -->
+    <color name="permukaan_kartu">#FFFFFFFF</color>
+    <!-- Header / toolbar section -->
+    <color name="latar_header">#FF0090FF</color>
+    <!-- Teks utama (judul, bold label) -->
+    <color name="teks_utama">#FF1A1A2E</color>
+    <!-- Teks sekunder (deskripsi, subtitle) -->
+    <color name="teks_sekunder">#FF666666</color>
+    <!-- Teks hint / placeholder / caption -->
+    <color name="teks_hint">#FF999999</color>
+    <!-- Garis pembatas / divider -->
+    <color name="garis_pembatas">#FFE0E0E0</color>
+    <!-- Latar bottom navigation bar -->
+    <color name="latar_nav">#FFFFFFFF</color>
+    <!-- Icon navigasi aktif -->
+    <color name="ikon_nav_aktif">#FF0090FF</color>
+    <!-- Icon navigasi tidak aktif -->
+    <color name="ikon_nav_nonaktif">#FF999999</color>
+
+</resources>

@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">SilatPRO</string>
+    <string name="splash_tagline">Analisis Gerakan Pencak Silat</string>
+
+    <!-- Navigasi -->
+    <string name="nav_beranda">Beranda</string>
+    <string name="nav_kamera">Kamera</string>
+    <string name="nav_riwayat">Riwayat</string>
+    <string name="tentang_aplikasi">Tentang Aplikasi</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_judul_1">Selamat Datang di SilatPRO</string>
+    <string name="onboarding_desc_1">Aplikasi analisis gerakan Pencak Silat berbasis AI untuk membantu Anda menyempurnakan teknik.</string>
+    <string name="onboarding_judul_2">Analisis Otomatis</string>
+    <string name="onboarding_desc_2">Sistem Computer Vision mendeteksi pose tubuh Anda secara real-time dan mengevaluasi kualitas gerakan.</string>
+    <string name="onboarding_judul_3">Mulai Berlatih!</string>
+    <string name="onboarding_desc_3">Pilih gerakan, ikuti panduan, dan dapatkan skor serta feedback untuk meningkatkan teknik Anda.</string>
+    <string name="btn_mulai">Mulai</string>
+    <string name="btn_lewati">Lewati</string>
+    <string name="btn_selanjutnya">Selanjutnya</string>
+
+    <!-- Beranda -->
+    <string name="beranda_selamat_datang">Selamat Berlatih! 🥋</string>
+    <string name="beranda_pilih_gerakan">Pilih gerakan untuk memulai latihan</string>
+
+    <!-- Detail -->
+    <string name="btn_mulai_latihan">Mulai Latihan</string>
+    <string name="detail_deskripsi">Deskripsi Teknik</string>
+    <string name="detail_definisi_gerakan">Definisi Gerakan</string>
+    <string name="detail_variasi">Variasi Gerakan</string>
+    <string name="detail_posisi">Posisi Tubuh yang Benar</string>
+    <string name="btn_detail">Detail</string>
+    <string name="btn_mulai_evaluasi">Mulai Evaluasi</string>
+
+    <!-- Kamera -->
+    <string name="kamera_mendeteksi">Mendeteksi pose...</string>
+    <string name="kamera_tidak_terdeteksi">Pose tidak terdeteksi</string>
+    <string name="kamera_selesai">Selesai</string>
+    <string name="kamera_mode_global">Mode Deteksi Umum</string>
+
+    <!-- Hasil -->
+    <string name="hasil_judul">Hasil Evaluasi</string>
+    <string name="hasil_riwayat_judul">Detail Riwayat</string>
+    <string name="hasil_skor">Skor</string>
+    <string name="hasil_kategori">Kategori</string>
+    <string name="hasil_detail_fitur">Detail Fitur</string>
+    <string name="hasil_feedback">Feedback</string>
+    <string name="btn_ulangi">Ulangi Latihan</string>
+    <string name="btn_kembali">Kembali ke Beranda</string>
+
+    <!-- Riwayat -->
+    <string name="riwayat_kosong">Belum ada riwayat latihan.\nMulai berlatih sekarang!</string>
+    <string name="riwayat_judul">Riwayat Latihan</string>
+    <string name="riwayat_subjudul">Pantau skor dan feedback latihan tersimpan</string>
+
+    <!-- Kategori Skor -->
+    <string name="kategori_sangat_baik">Sangat Baik</string>
+    <string name="kategori_baik">Baik</string>
+    <string name="kategori_cukup">Cukup</string>
+    <string name="kategori_kurang">Kurang</string>
+
+    <!-- Permission -->
+    <string name="izin_kamera_dibutuhkan">Izin kamera diperlukan untuk mendeteksi gerakan</string>
+    <string name="tentang_ringkas">SilatPRO adalah aplikasi latihan Pencak Silat berbasis AI untuk membantu mengevaluasi postur, sudut tubuh, dan kualitas gerakan secara praktis.</string>
+</resources>

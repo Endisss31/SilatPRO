@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "pose_model": "YOLOv8n-Pose COCO 17 keypoints",
+  "score_categories": [
+    {
+      "min_score": 85,
+      "label": "sangat baik"
+    },
+    {
+      "min_score": 70,
+      "label": "baik"
+    },
+    {
+      "min_score": 55,
+      "label": "cukup"
+    },
+    {
+      "min_score": 0,
+      "label": "kurang"
+    }
+  ],
+  "features": [
+    "angle_left_arm",
+    "angle_right_arm",
+    "angle_left_leg",
+    "angle_right_leg",
+    "angle_left_waist",
+    "angle_right_waist",
+    "dist_feet_normalized",
+    "dist_hands_normalized"
+  ],
+  "movement": {
+    "id": "tangkisan_1_kiri",
+    "label": "Tangkisan 1 Kiri",
+    "parent_movement": "tangkisan_1",
+    "side": "kiri",
+    "description": "Model acuan untuk gerakan tangkisan 1 sisi kiri.",
+    "sample_count": 1,
+    "source_movements": [
+      "TANGKISAN1KIRI-1"
+    ],
+    "features": {
+      "angle_left_arm": {
+        "target": 54.65,
+        "min": 54.65,
+        "max": 54.65,
+        "std": 0.0,
+        "tolerance": 8.0
+      },
+      "angle_right_arm": {
+        "target": 152.25,
+        "min": 152.25,
+        "max": 152.25,
+        "std": 0.0,
+        "tolerance": 8.0
+      },
+      "angle_left_leg": {
+        "target": 140.19,
+        "min": 140.19,
+        "max": 140.19,
+        "std": 0.0,
+        "tolerance": 8.0
+      },
+      "angle_right_leg": {
+        "target": 137.13,
+        "min": 137.13,
+        "max": 137.13,
+        "std": 0.0,
+        "tolerance": 8.0
+      },
+      "angle_left_waist": {
+        "target": 114.42,
+        "min": 114.42,
+        "max": 114.42,
+        "std": 0.0,
+        "tolerance": 8.0
+      },
+      "angle_right_waist": {
+        "target": 112.66,
+        "min": 112.66,
+        "max": 112.66,
+        "std": 0.0,
+        "tolerance": 8.0
+      },
+      "dist_feet_normalized": {
+        "target": 3.118,
+        "min": 3.118,
+        "max": 3.118,
+        "std": 0.0,
+        "tolerance": 0.25
+      },
+      "dist_hands_normalized": {
+        "target": 2.156,
+        "min": 2.156,
+        "max": 2.156,
+        "std": 0.0,
+        "tolerance": 0.25
+      }
+    },
+    "feedback_rules": [
+      {
+        "feature": "angle_left_arm",
+        "low": "Sudut siku tangkisan kiri kurang — pastikan lengan membentuk sudut di samping wajah.",
+        "high": "Sudut siku tangkisan kiri terlalu terbuka — rapatkan posisi siku di samping wajah.",
+        "ok": "Sudut tangkisan kiri sudah sesuai di samping wajah.",
+        "target": 54.65,
+        "tolerance": 8.0
+      },
+      {
+        "feature": "angle_right_arm",
+        "low": "Tangan kanan kurang menekuk — tarik ke samping pinggang dalam posisi siap.",
+        "high": "Tangan kanan terlalu terbuka ke depan — tarik ke posisi siap di pinggang.",
+        "ok": "Posisi tangan kanan sudah siap.",
+        "target": 152.25,
+        "tolerance": 8.0
+      },
+      {
+        "feature": "angle_left_leg",
+        "low": "Kuda-kuda kaki kiri terlalu menekuk — luruskan sedikit.",
+        "high": "Kuda-kuda kaki kiri terlalu lurus — tekuk sedikit untuk kuda-kuda stabil.",
+        "ok": "Kuda-kuda kaki kiri sudah sesuai.",
+        "target": 140.19,
+        "tolerance": 8.0
+      },
+      {
+        "feature": "angle_right_leg",
+        "low": "Kuda-kuda kaki kanan terlalu menekuk — luruskan sedikit.",
+        "high": "Kuda-kuda kaki kanan terlalu lurus — tekuk sedikit.",
+        "ok": "Kuda-kuda kaki kanan sudah sesuai.",
+        "target": 137.13,
+        "tolerance": 8.0
+      },
+      {
+        "feature": "dist_feet_normalized",
+        "low": "Kuda-kuda terlalu rapat — lebarkan posisi kaki untuk keseimbangan.",
+        "high": "Kuda-kuda terlalu lebar — rapatkan sedikit posisi kaki.",
+        "ok": "Lebar kuda-kuda sudah sesuai acuan.",
+        "target": 3.118,
+        "tolerance": 0.25
+      }
+    ]
+  }
+}

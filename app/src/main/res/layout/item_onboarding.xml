@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="40dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Multiple logos -->
+        <LinearLayout
+            android:id="@+id/layoutMultiLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imgLogo1"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="16dp"
+                android:scaleType="fitCenter" />
+            
+            <ImageView
+                android:id="@+id/imgLogo2"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="16dp"
+                android:scaleType="fitCenter" />
+
+            <ImageView
+                android:id="@+id/imgLogo3"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgOnboarding"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:contentDescription="Onboarding"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
+
+    <!-- Judul -->
+    <TextView
+        android:id="@+id/txtJudul"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/poppins"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp"
+        android:textColor="@color/putih"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <!-- Deskripsi -->
+    <TextView
+        android:id="@+id/txtDeskripsi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins"
+        android:gravity="center"
+        android:lineSpacingExtra="6dp"
+        android:textColor="#CCFFFFFF"
+        android:textSize="15sp" />
+
+</LinearLayout>

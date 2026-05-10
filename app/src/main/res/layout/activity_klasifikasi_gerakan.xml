@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout Kamera Klasifikasi — Full Screen 9:16 (fillCenter)
+    ─────────────────────────────────────────────────────────
+    • PreviewView mengisi SELURUH layar dengan fillCenter (9:16 natural)
+    • UI melayang di atas kamera — tidak ada ruang mati
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <!-- ── Layer 1: Kamera Full Screen 9:16 (fillCenter = portrait penuh) ─── -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewKamera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:implementationMode="compatible"
+        app:scaleType="fillCenter" />
+
+    <!-- ── Layer 2: Overlay Skeleton ─── -->
+    <com.el.silatpro.ui.kamera.TampilanOverlayPose
+        android:id="@+id/overlayPose"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- ── Layer 3: Gradasi atas ─── -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_gravity="top"
+        android:background="@drawable/gradasi_atas_kamera" />
+
+    <!-- ── Layer 4: Gradasi bawah ─── -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/gradasi_bawah_kamera" />
+
+    <!-- ── Layer 5: Header melayang (tombol kembali + badge FPS) ─── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
+
+        <!-- Tombol kembali -->
+        <ImageButton
+            android:id="@+id/btnKembali"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_bulat_hitam_transparan"
+            android:contentDescription="Kembali"
+            android:src="@drawable/ic_panah_kiri"
+            android:padding="10dp"
+            app:tint="@color/putih" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- Badge FPS -->
+        <TextView
+            android:id="@+id/txtFps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_bulat_hitam_transparan"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:text="0 FPS"
+            android:textColor="#00FF88"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- ── Layer 6: Tombol switch kamera (pojok kanan tengah) ─── -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnSwitchKamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:layout_margin="16dp"
+        android:contentDescription="Switch Kamera"
+        android:src="@drawable/ic_kamera"
+        app:backgroundTint="#BB000000"
+        app:fabSize="mini"
+        app:tint="@color/putih" />
+
+    <!-- ── Layer 7: Card hasil klasifikasi melayang di bawah ─── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="48dp"
+        android:paddingTop="16dp">
+
+        <!-- Label mode -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/kamera_mode_global"
+            android:textColor="@color/biru_terang"
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:shadowColor="#99000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="4" />
+
+        <!-- Nama gerakan terdeteksi -->
+        <TextView
+            android:id="@+id/txtGerakanTerdeteksi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/kamera_mendeteksi"
+            android:textColor="@color/putih"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:shadowColor="#BB000000"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="6" />
+
+        <!-- Nilai konfiden -->
+        <TextView
+            android:id="@+id/txtKonfiden"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#CCFFFFFF"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:shadowColor="#99000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="3" />
+    </LinearLayout>
+
+</FrameLayout>

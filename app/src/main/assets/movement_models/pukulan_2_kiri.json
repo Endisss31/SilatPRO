@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "pose_model": "YOLOv8n-Pose COCO 17 keypoints",
+  "score_categories": [
+    {
+      "min_score": 85,
+      "label": "sangat baik"
+    },
+    {
+      "min_score": 70,
+      "label": "baik"
+    },
+    {
+      "min_score": 55,
+      "label": "cukup"
+    },
+    {
+      "min_score": 0,
+      "label": "kurang"
+    }
+  ],
+  "features": [
+    "angle_left_arm",
+    "angle_right_leg",
+    "angle_left_leg",
+    "wrong_right_punch_alignment"
+  ],
+  "movement": {
+    "id": "pukulan_2_kiri",
+    "label": "Pukulan 2 Kiri",
+    "parent_movement": "pukulan_2",
+    "side": "kiri",
+    "description": "Model acuan Pukulan 2 Kiri dari keypoint YOLO pukulan2kiri_vid01_0000.jpg.",
+    "sample_count": 1,
+    "source_movements": [
+      "pukulan2kiri_vid01_0000.jpg"
+    ],
+    "features": {
+      "angle_left_arm": {
+        "target": 169.6043,
+        "min": 159.6043,
+        "max": 179.6043,
+        "std": 0.0,
+        "tolerance": 10.0,
+        "full_score_within_tolerance": true
+      },
+      "angle_right_leg": {
+        "target": 145.2049,
+        "min": 140.2049,
+        "max": 150.2049,
+        "std": 0.0,
+        "tolerance": 5.0,
+        "full_score_within_tolerance": true
+      },
+      "angle_left_leg": {
+        "target": 147.61,
+        "min": 142.61,
+        "max": 152.61,
+        "std": 0.0,
+        "tolerance": 5.0,
+        "full_score_within_tolerance": true
+      },
+      "wrong_right_punch_alignment": {
+        "target": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "std": 0.0,
+        "tolerance": 0.25,
+        "full_score_within_tolerance": true
+      }
+    },
+    "feedback_rules": [
+      {
+        "feature": "angle_left_arm",
+        "low": "Lengan kiri belum sesuai arah pukulan acuan.",
+        "high": "Lengan kiri terlalu lurus/melewati acuan pukulan.",
+        "ok": "Lengan kiri sudah lurus sesuai arah pukulan.",
+        "target": 169.6043,
+        "tolerance": 10.0
+      },
+      {
+        "feature": "angle_right_leg",
+        "low": "Kuda-kuda kaki kanan terlalu menekuk dari acuan.",
+        "high": "Kuda-kuda kaki kanan terlalu lurus dari acuan.",
+        "ok": "Kuda-kuda kaki kanan sudah sesuai.",
+        "target": 145.2049,
+        "tolerance": 5.0
+      },
+      {
+        "feature": "angle_left_leg",
+        "low": "Kuda-kuda kaki kiri terlalu menekuk dari acuan.",
+        "high": "Kuda-kuda kaki kiri terlalu lurus dari acuan.",
+        "ok": "Kuda-kuda kaki kiri sudah sesuai.",
+        "target": 147.61,
+        "tolerance": 5.0
+      },
+      {
+        "feature": "wrong_right_punch_alignment",
+        "low": "Tangan kanan tidak menjadi tangan pemukul.",
+        "high": "Tangan kanan terdeteksi sejajar bahu seperti memukul. Gunakan tangan kiri untuk Pukulan 2 Kiri.",
+        "ok": "Tangan kanan tidak menjadi tangan pemukul.",
+        "target": 0.0,
+        "tolerance": 0.25
+      }
+    ]
+  }
+}

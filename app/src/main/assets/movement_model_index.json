@@ -1,0 +1,106 @@
+{
+  "schema_version": 2,
+  "pose_model": "YOLOv8x-Pose COCO 17 keypoints",
+  "movements": [
+    {
+      "id": "pukulan_2",
+      "label": "Pukulan 2",
+      "classes": [
+        {
+          "id": "pukulan_2_kanan",
+          "label": "Pukulan 2 Kanan",
+          "side": "kanan",
+          "asset": "Model/Pukulan2/model_pukulan2_mlp.tflite",
+          "sample_count": 1
+        },
+        {
+          "id": "pukulan_2_kiri",
+          "label": "Pukulan 2 Kiri",
+          "side": "kiri",
+          "asset": "Model/Pukulan2/model_pukulan2_mlp.tflite",
+          "sample_count": 1
+        }
+      ]
+    },
+    {
+      "id": "pukulan_4",
+      "label": "Pukulan 4",
+      "classes": [
+        {
+          "id": "pukulan_4_kanan",
+          "label": "Pukulan 4 Kanan",
+          "side": "kanan",
+          "asset": "Model/Pukulan4/model_pukulan4_mlp.tflite",
+          "sample_count": 1
+        },
+        {
+          "id": "pukulan_4_kiri",
+          "label": "Pukulan 4 Kiri",
+          "side": "kiri",
+          "asset": "Model/Pukulan4/model_pukulan4_mlp.tflite",
+          "sample_count": 1
+        }
+      ]
+    },
+    {
+      "id": "tangkisan_1",
+      "label": "Tangkisan 1",
+      "classes": [
+        {
+          "id": "tangkisan_1_kanan",
+          "label": "Tangkisan 1 Kanan",
+          "side": "kanan",
+          "asset": "Model/Tangkisan1/model_tangkisan1_mlp.tflite",
+          "sample_count": 1
+        },
+        {
+          "id": "tangkisan_1_kiri",
+          "label": "Tangkisan 1 Kiri",
+          "side": "kiri",
+          "asset": "Model/Tangkisan1/model_tangkisan1_mlp.tflite",
+          "sample_count": 1
+        }
+      ]
+    },
+    {
+      "id": "tangkisan_3",
+      "label": "Tangkisan 3",
+      "classes": [
+        {
+          "id": "tangkisan_3_kanan",
+          "label": "Tangkisan 3 Kanan",
+          "side": "kanan",
+          "asset": "Model/Tangkisan3/model_tangkisan3_mlp.tflite",
+          "sample_count": 1
+        },
+        {
+          "id": "tangkisan_3_kiri",
+          "label": "Tangkisan 3 Kiri",
+          "side": "kiri",
+          "asset": "Model/Tangkisan3/model_tangkisan3_mlp.tflite",
+          "sample_count": 1
+        }
+      ]
+    },
+    {
+      "id": "tendangan_2",
+      "label": "Tendangan 2",
+      "classes": [
+        {
+          "id": "tendangan_2_kanan",
+          "label": "Tendangan 2 Kanan",
+          "side": "kanan",
+          "asset": "Model/Tendangan2/model_tendangan2_mlp.tflite",
+          "sample_count": 1
+        },
+        {
+          "id": "tendangan_2_kiri",
+          "label": "Tendangan 2 Kiri",
+          "side": "kiri",
+          "asset": "Model/Tendangan2/model_tendangan2_mlp.tflite",
+          "sample_count": 1
+        }
+      ]
+    }
+  ]
+}

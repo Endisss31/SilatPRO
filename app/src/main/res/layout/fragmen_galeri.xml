@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/putih_pudar"
+    android:orientation="vertical">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/headerGaleri"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/bg_gradien_biru2"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:text="Galeri Gerakan"
+            android:textColor="@color/putih"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Chip Filter -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/putih_pudar"
+        android:paddingStart="12dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Menggunakan RadioButton-style chips via MaterialComponents -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSemua"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="8dp"
+                android:checked="true"
+                android:fontFamily="@font/poppins"
+                android:text="Semua"
+                android:textSize="13sp"
+                android:textColor="@color/chip_text_color_selector"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="18dp"
+                app:chipStrokeWidth="0dp"
+                app:checkedIconVisible="false"
+                app:ensureMinTouchTargetSize="false" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPukulan"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/poppins"
+                android:text="Pukulan"
+                android:textSize="13sp"
+                android:textColor="@color/chip_text_color_selector"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="18dp"
+                app:chipStrokeWidth="0dp"
+                app:checkedIconVisible="false"
+                app:ensureMinTouchTargetSize="false" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTangkisan"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/poppins"
+                android:text="Tangkisan"
+                android:textSize="13sp"
+                android:textColor="@color/chip_text_color_selector"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="18dp"
+                app:chipStrokeWidth="0dp"
+                app:checkedIconVisible="false"
+                app:ensureMinTouchTargetSize="false" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTendangan"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:fontFamily="@font/poppins"
+                android:text="Tendangan"
+                android:textSize="13sp"
+                android:textColor="@color/chip_text_color_selector"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="18dp"
+                app:chipStrokeWidth="0dp"
+                app:checkedIconVisible="false"
+                app:ensureMinTouchTargetSize="false" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- Grid RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvGerakan"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="80dp" />
+
+</LinearLayout>
