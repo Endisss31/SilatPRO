@@ -39,5 +39,17 @@
     <color name="abu_terang">#FF78909C</color>
     <!-- Override abu_sangat_terang ke subtle dark border -->
     <color name="abu_sangat_terang">#FF1E2A3E</color>
+    <!-- Latar dialog popup di dark mode -->
+    <color name="latar_dialog">#FF162236</color>
+    <!-- Teks hint di dialog dark mode -->
+    <color name="teks_dialog_hint">#5588AACC</color>
+    <!-- Header bar dialog dark mode -->
+    <color name="latar_dialog_header">#FF1A2A3E</color>
+    <!-- Divider dialog dark mode -->
+    <color name="garis_dialog">#22FFFFFF</color>
+    <!-- Ikon background dark mode -->
+    <color name="latar_ikon_ketentuan">#22007AFF</color>
+    <!-- Border ikon ketentuan dark mode -->
+    <color name="border_ikon_ketentuan">#44007AFF</color>
 
 </resources>

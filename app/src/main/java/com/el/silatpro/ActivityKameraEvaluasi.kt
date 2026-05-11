@@ -112,7 +112,10 @@ class ActivityKameraEvaluasi : AppCompatActivity() {
         binding.overlayPose.setModeFillCenter(true)
         binding.overlayPose.setKameraDepan(false)
 
-        periksaIzinKamera()
+        // Tampilkan popup ketentuan penggunaan sebelum kamera dimulai
+        DialogKetentuanKamera.tampilkan(this, kunci = "evaluasi") {
+            periksaIzinKamera()
+        }
     }
 
     override fun onStart() {

@@ -116,7 +116,11 @@ class ActivityKlasifikasiGerakan : AppCompatActivity() {
         }
 
         aktif = true
-        periksaIzinKamera()
+
+        // Tampilkan popup ketentuan penggunaan sebelum kamera dimulai
+        DialogKetentuanKamera.tampilkan(this, kunci = "klasifikasi") {
+            periksaIzinKamera()
+        }
     }
 
     override fun onStart() {

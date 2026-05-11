@@ -68,4 +68,12 @@
     <!-- Icon navigasi tidak aktif -->
     <color name="ikon_nav_nonaktif">#FF999999</color>
 
+    <!-- Dialog Colors (ketentuan kamera & pratinjau foto) -->
+    <color name="latar_dialog">#FFFFFFFF</color>
+    <color name="latar_dialog_header">#FFF0F4FF</color>
+    <color name="teks_dialog_hint">#88446688</color>
+    <color name="garis_dialog">#22000000</color>
+    <color name="latar_ikon_ketentuan">#220090FF</color>
+    <color name="border_ikon_ketentuan">#440090FF</color>
+
 </resources>

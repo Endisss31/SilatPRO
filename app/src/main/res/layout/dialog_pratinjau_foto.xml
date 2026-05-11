@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Dialog Pratinjau Foto Pose — Theme-Aware
+    ─────────────────────────────────────────────────────
+    Mendukung Light & Dark mode via @color/ semantic resources.
+    Card background: permukaan_kartu (putih / navy gelap)
+    Header: latar_dialog_header
+    Teks: teks_utama / teks_sekunder
+    Divider: garis_dialog
+    Footer hint: teks_dialog_hint
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="24dp"
+        app:cardBackgroundColor="@color/permukaan_kartu">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- ── Header bar ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@color/latar_dialog_header"
+                android:gravity="center_vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_kamera"
+                    app:tint="@color/biru_utama"
+                    android:contentDescription="Foto" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:text="Pose Terbaik"
+                    android:textColor="@color/teks_utama"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/poppins" />
+
+                <!-- Tombol tutup -->
+                <ImageButton
+                    android:id="@+id/btnTutupFoto"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/close_small_24px"
+                    android:contentDescription="Tutup"
+                    app:tint="@color/teks_sekunder"
+                    android:padding="10dp" />
+            </LinearLayout>
+
+            <!-- ── Divider ── -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/garis_dialog" />
+
+            <!-- ── Foto utama ── -->
+            <ImageView
+                android:id="@+id/imgPratinjauFoto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:maxHeight="460dp"
+                android:scaleType="fitCenter"
+                android:background="@color/latar_app"
+                android:contentDescription="Pratinjau foto pose terbaik" />
+
+            <!-- ── Footer info ── -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="14dp"
+                android:gravity="center"
+                android:text="Tekan di luar untuk menutup"
+                android:textColor="@color/teks_dialog_hint"
+                android:textSize="11sp"
+                android:fontFamily="@font/poppins" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Dialog Ketentuan Kamera — Theme-Aware
+    ─────────────────────────────────────────────────────
+    Mendukung Light & Dark mode via @color/ semantic resources.
+    Background: latar_dialog (putih / navy gelap)
+    Teks utama: teks_utama (hitam / putih)
+    Teks sekunder: teks_sekunder
+    Teks hint: teks_dialog_hint
+    Divider: garis_dialog
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_ketentuan"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="28dp"
+    android:paddingBottom="24dp">
+
+    <!-- ── Ikon kamera besar ── -->
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_kamera"
+        app:tint="@color/biru_utama"
+        android:contentDescription="Ikon Kamera" />
+
+    <!-- ── Judul ── -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:gravity="center"
+        android:text="Sebelum Mulai"
+        android:textColor="@color/teks_utama"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/poppins" />
+
+    <!-- ── Sub-judul ── -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:text="Pastikan kondisi berikut terpenuhi"
+        android:textColor="@color/teks_sekunder"
+        android:textSize="13sp"
+        android:fontFamily="@font/poppins" />
+
+    <!-- ── Divider ── -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/garis_dialog" />
+
+    <!-- ── Item 1: Posisi kamera ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="14dp">
+
+        <TextView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_ikon_ketentuan"
+            android:gravity="center"
+            android:text="📱"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Posisi Kamera Tegak (Portrait)"
+                android:textColor="@color/teks_utama"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pegang ponsel dalam posisi vertikal / berdiri"
+                android:textColor="@color/teks_sekunder"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/poppins" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ── Item 2: Pencahayaan ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="14dp">
+
+        <TextView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_ikon_ketentuan"
+            android:gravity="center"
+            android:text="☀️"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pencahayaan Cukup"
+                android:textColor="@color/teks_utama"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pastikan ruangan cukup terang agar pose terdeteksi"
+                android:textColor="@color/teks_sekunder"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/poppins" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ── Item 3: Seluruh badan ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="14dp">
+
+        <TextView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_ikon_ketentuan"
+            android:gravity="center"
+            android:text="🧍"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seluruh Badan Terlihat"
+                android:textColor="@color/teks_utama"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mundur hingga kepala sampai kaki masuk ke layar"
+                android:textColor="@color/teks_sekunder"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/poppins" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ── Item 4: Tahan gerakan ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_ikon_ketentuan"
+            android:gravity="center"
+            android:text="⏳"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tahan Gerakan Sejenak"
+                android:textColor="@color/teks_utama"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tunggu hingga sistem memberikan penilaian / feedback"
+                android:textColor="@color/teks_sekunder"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/poppins" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ── Divider ── -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/garis_dialog" />
+
+    <!-- ── Tombol Mulai ── -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnMengerti"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:backgroundTint="@color/biru_utama"
+        android:text="Siap, Mulai!"
+        android:textColor="@color/putih"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/poppins"
+        app:cornerRadius="26dp" />
+
+    <!-- ── Checkbox jangan tampilkan lagi ── -->
+    <CheckBox
+        android:id="@+id/cbJanganTampilLagi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="Jangan tampilkan lagi"
+        android:textColor="@color/teks_dialog_hint"
+        android:textSize="12sp"
+        android:fontFamily="@font/poppins"
+        android:buttonTint="@color/biru_utama" />
+
+</LinearLayout>

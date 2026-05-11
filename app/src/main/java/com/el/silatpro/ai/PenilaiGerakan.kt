@@ -475,11 +475,45 @@ class PenilaiGerakan(private val konteks: Context) {
     /**
      * Nama gerakan yang ramah untuk ditampilkan ke user.
      * Contoh: "Pukulan2Kanan" → "Pukulan 2 Kanan"
+     *
+     * CATATAN: Android tidak mendukung variable-length lookbehind regex
+     * seperti `(?<=[A-Z]{2,})` → PatternSyntaxException di runtime.
+     * Gunakan pemrosesan karakter manual sebagai gantinya.
      */
     private fun namaRamahGerakan(label: String): String {
-        return label
-            .replace(Regex("(?<=[a-z])(?=[A-Z])"), " ")
-            .replace(Regex("(?<=[A-Z]{2,})(?=[A-Z][a-z])"), " ")
+        return sisipkanSpasiCamelCase(label)
+    }
+
+    /**
+     * Sisipkan spasi pada batas CamelCase tanpa regex lookbehind.
+     * Menangani: lowercase→Uppercase, UPPER→Uppercase, huruf→angka, angka→huruf.
+     * Contoh: "Pukulan2Kanan" → "Pukulan 2 Kanan"
+     *         "Tangkisan1Kiri" → "Tangkisan 1 Kiri"
+     */
+    private fun sisipkanSpasiCamelCase(input: String): String {
+        if (input.isEmpty()) return input
+        val sb = StringBuilder()
+        sb.append(input[0])
+        for (i in 1 until input.length) {
+            val prev = input[i - 1]
+            val curr = input[i]
+            val next = if (i + 1 < input.length) input[i + 1] else '\u0000'
+
+            val sisipSpasi = when {
+                // lowercase → Uppercase: "nK" → "n K"
+                prev.isLowerCase() && curr.isUpperCase() -> true
+                // angka → huruf atau huruf → angka: "2K" → "2 K" / "n2" → "n 2"
+                prev.isDigit() && curr.isLetter() -> true
+                prev.isLetter() && curr.isDigit() -> true
+                // UPPER UPPER lowercase: "NKa" → "N Ka" (batas akronim)
+                prev.isUpperCase() && curr.isUpperCase() && next.isLowerCase() -> true
+                else -> false
+            }
+
+            if (sisipSpasi) sb.append(' ')
+            sb.append(curr)
+        }
+        return sb.toString()
     }
 
     /**

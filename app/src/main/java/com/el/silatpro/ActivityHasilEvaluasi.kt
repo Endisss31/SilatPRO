@@ -1,9 +1,15 @@
 package com.el.silatpro
 
+import android.app.Dialog
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -12,6 +18,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.el.silatpro.data.BasisDataAplikasi
 import com.el.silatpro.databinding.ActivityHasilEvaluasiBinding
+import com.el.silatpro.databinding.DialogPratinjauFotoBinding
 import com.el.silatpro.ui.riwayat.AdapterDetailFitur
 import com.el.silatpro.ui.riwayat.AdapterFeedback
 import com.google.gson.Gson
@@ -27,6 +34,9 @@ class ActivityHasilEvaluasi : AppCompatActivity() {
     private lateinit var binding: ActivityHasilEvaluasiBinding
     private var idRiwayat: Int = -1
     private var isModeRiwayat: Boolean = false
+
+    /** Simpan bitmap yang sudah di-load agar bisa dibuka di popup tanpa decode ulang */
+    private var bitmapFotoTerbaik: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -172,6 +182,7 @@ class ActivityHasilEvaluasi : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     if (bitmap != null) {
+                        bitmapFotoTerbaik = bitmap
                         binding.imgFotoTerbaik.setImageBitmap(bitmap)
                         // Tampilkan kartu foto dengan animasi fade-in
                         binding.kartuFotoTerbaik.apply {
@@ -182,6 +193,12 @@ class ActivityHasilEvaluasi : AppCompatActivity() {
                                 .setDuration(400)
                                 .start()
                         }
+                        // Pasang click listener untuk popup pratinjau
+                        binding.imgFotoTerbaik.setOnClickListener {
+                            tampilkanPopupFoto(bitmap)
+                        }
+                        binding.imgFotoTerbaik.isClickable = true
+                        binding.imgFotoTerbaik.isFocusable = true
                     }
                 }
             } catch (e: Exception) {
@@ -191,5 +208,50 @@ class ActivityHasilEvaluasi : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    /**
+     * Tampilkan popup pratinjau foto pose — floating card, bukan full screen.
+     * Pengguna bisa menutup dengan tombol X atau tap di luar dialog.
+     */
+    private fun tampilkanPopupFoto(bitmap: Bitmap) {
+        if (isDestroyed || isFinishing) return
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCanceledOnTouchOutside(true)   // tap luar = tutup
+
+        val popupBinding = DialogPratinjauFotoBinding.inflate(LayoutInflater.from(this))
+        dialog.setContentView(popupBinding.root)
+
+        // ── Styling window: transparan + lebar 90% + dim di belakang ──────────
+        dialog.window?.apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setLayout(
+                (resources.displayMetrics.widthPixels * 0.90).toInt(),
+                WindowManager.LayoutParams.WRAP_CONTENT
+            )
+            addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            attributes = attributes?.also { it.dimAmount = 0.65f }
+        }
+
+        // ── Pasang bitmap ke ImageView popup ─────────────────────────────────
+        popupBinding.imgPratinjauFoto.setImageBitmap(bitmap)
+
+        // ── Animasi masuk: scale dari 0.85 + fade-in ─────────────────────────
+        popupBinding.root.apply {
+            scaleX = 0.85f
+            scaleY = 0.85f
+            alpha  = 0f
+            animate()
+                .scaleX(1f).scaleY(1f).alpha(1f)
+                .setDuration(220)
+                .start()
+        }
+
+        // ── Tombol tutup ─────────────────────────────────────────────────────
+        popupBinding.btnTutupFoto.setOnClickListener { dialog.dismiss() }
+
+        dialog.show()
     }
 }

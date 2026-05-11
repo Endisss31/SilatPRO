@@ -11,8 +11,6 @@ import java.nio.channels.FileChannel
 /**
  * Mesin klasifikasi untuk mode Open Camera (global).
  * Menggunakan model TFLite Global (model_global_mlp.tflite) + StandardScaler
- * yang sudah di-embed sebagai konstanta dari global_scaler.pkl training.
- *
  * Flow: fitur 34 (normalized) → StandardScaler → MLP TFLite → softmax → label
  */
 class MesinKlasifikasi(private val konteks: Context) {

@@ -47,7 +47,7 @@ class ActivityDetailGerakan : AppCompatActivity() {
     private fun aturInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            val navBar   = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val navBar    = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
 
             // Toolbar: tambah padding-top agar judul/back icon tidak tertimpa ikon status bar
             binding.toolbar.setPadding(
@@ -55,6 +55,14 @@ class ActivityDetailGerakan : AppCompatActivity() {
                 statusBar.top,
                 binding.toolbar.paddingRight,
                 binding.toolbar.paddingBottom
+            )
+
+            // BottomBar: tambah padding-bottom agar tombol tidak tertutup nav bar / gesture bar HP
+            binding.layoutBottomBar.setPadding(
+                binding.layoutBottomBar.paddingLeft,
+                binding.layoutBottomBar.paddingTop,
+                binding.layoutBottomBar.paddingRight,
+                navBar.bottom
             )
 
             insets
