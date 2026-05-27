@@ -36,7 +36,6 @@
 |-------|-----------|
 | 🎥 **Mode Kamera Terbuka** | Deteksi gerakan secara real-time tanpa target tertentu. Cocok untuk eksplorasi. |
 | 📊 **Mode Evaluasi Real-time** | Evaluasi gerakan spesifik dengan skor & feedback langsung saat bergerak. |
-| 🎬 **Mode Kamera Rekam** | Rekam gerakan offline lalu evaluasi hasilnya — tidak perlu melihat layar saat bergerak. |
 | 🦴 **Overlay Skeleton Pose** | Visualisasi 17 titik keypoint tubuh di atas kamera secara real-time. |
 | 🔊 **Text-to-Speech Feedback** | Feedback perbaikan diucapkan secara lisan agar pengguna tidak perlu melihat layar. |
 | 📚 **Galeri Gerakan** | Panduan visual dan deskripsi semua gerakan yang tersedia. |
@@ -50,10 +49,9 @@
 ### AI / Machine Learning
 | Library | Versi | Fungsi |
 |---------|-------|--------|
-| **TensorFlow Lite** | 2.17.0 | Inferensi model YOLOv8-Pose & MLP di device |
-| **TFLite GPU Delegate** | — | Akselerasi GPU (Adreno/Mali) |
-| **NNAPI Delegate** | — | Akselerasi hardware (GPU/DSP/NPU) |
-| **ML Kit Pose Detection** | — | Deteksi pose untuk visual overlay (lebih cepat) |
+| **TensorFlow Lite** | 2.17.0 | Inferensi model YOLOv8n-Pose & MLP Global di device |
+| **XNNPACK** | — | Akselerasi CPU (aktif default, stabil di semua device) |
+| **ML Kit Pose Detection** | — | Deteksi pose untuk visual overlay skeleton (lebih cepat) |
 
 ### Android Core
 | Library | Fungsi |
@@ -63,7 +61,7 @@
 | **ViewPager2** | Navigasi antar tab utama |
 | **ViewBinding** | Binding layout XML ke kode |
 | **Kotlin Coroutines** | Operasi async (background thread) |
-| **Gson** | Parse/serialize JSON (model rule-based, riwayat) |
+| **Gson** | Parse/serialize JSON (rule-based model, riwayat) |
 
 ---
 
@@ -79,8 +77,7 @@
 ┌────────────────────▼────────────────────────────┐
 │              Kamera Activities                   │
 │  ActivityKlasifikasiGerakan (Open Camera)        │
-│  ActivityKameraEvaluasi (Mode Realtime)          │
-│  ActivityKameraRekam (Mode Rekam)                │
+│  ActivityKameraEvaluasi     (Mode Evaluasi)      │
 └────────────────────┬────────────────────────────┘
                      │ CameraX ImageProxy
 ┌────────────────────▼────────────────────────────┐
@@ -94,16 +91,19 @@
 │  └──────┬──────┘    └────────┬─────────┘        │
 │         │                   │                   │
 │  PendeteksiPose         PendeteksiPoseMLKit     │
-│  (YOLOv8x-pose)        (untuk overlay cepat)   │
+│  (YOLOv8n-Pose f16)    (untuk overlay cepat)   │
 │         ↓                   ↓                   │
 │  PenstabilPose (One Euro Filter)                │
 │         ↓                   ↓                   │
 │  [Evaluasi Skor]      [Gambar Skeleton]         │
-│  PengekstrakFitur                               │
+│  Normalizer (body-relative)                     │
 │         ↓                                       │
-│  MesinKlasifikasi / PenilaiGerakan              │
+│  MLPClassifier / MesinKlasifikasi               │
+│  (Global MLP — 10 kelas)                        │
 │         ↓                                       │
-│  Skor + Feedback → UI                           │
+│  PengevaluasiRuleBase (JSON rule-based)         │
+│         ↓                                       │
+│  Skor + Feedback → UI + TTS                     │
 └─────────────────────────────────────────────────┘
                      │
 ┌────────────────────▼────────────────────────────┐
@@ -124,23 +124,26 @@ app/src/main/java/com/el/silatpro/
 │   ├── ActivityMain.kt               ← Halaman utama (ViewPager2 + Bottom Nav)
 │   ├── ActivitySplash.kt             ← Splash screen animasi
 │   ├── ActivityOpenSplash.kt         ← Splash pertama kali buka
-│   ├── ActivityDetailGerakan.kt      ← Halaman detail + panduan gerakan
+│   ├── ActivityDetailGerakan.kt      ← Halaman detail + panduan gerakan (langsung ke Evaluasi)
 │   ├── ActivityKlasifikasiGerakan.kt ← Kamera terbuka (Open Camera mode)
-│   ├── ActivityKameraEvaluasi.kt     ← Evaluasi real-time dengan skor
-│   ├── ActivityKameraRekam.kt        ← Mode rekam offline
+│   ├── ActivityKameraEvaluasi.kt     ← Evaluasi real-time dengan skor + TTS
 │   ├── ActivityHasilEvaluasi.kt      ← Tampilkan hasil & riwayat latihan
 │   ├── ActivityTentang.kt            ← Halaman tentang aplikasi
 │   ├── DialogKetentuanKamera.kt      ← Popup syarat penggunaan kamera
-│   ├── DialogPilihMode.kt            ← Popup pilih mode (rekam/realtime)
+│   ├── ActivityKameraRekam.kt        ← ⚠ Tidak dipakai (orphaned, aman dihapus)
+│   ├── DialogPilihMode.kt            ← ⚠ Tidak dipakai (orphaned, aman dihapus)
 │   └── PengaturStatusBar.kt          ← Utilitas status bar
 │
 ├── 🤖 ai/ — Engine AI
-│   ├── MesinKlasifikasi.kt           ← Klasifikasi global (Open Camera)
-│   ├── PendeteksiPose.kt             ← Deteksi pose YOLOv8x-Pose TFLite
+│   ├── MLPClassifier.kt              ← Inferensi model MLP Global (10 kelas)
+│   ├── MesinKlasifikasi.kt           ← Wrapper klasifikasi untuk Open Camera
+│   ├── Normalizer.kt                 ← Body-relative normalization + StandardScaler
+│   ├── Letterbox.kt                  ← Letterbox resize Bitmap untuk input YOLO
+│   ├── PendeteksiPose.kt             ← Deteksi pose YOLOv8n-Pose TFLite
 │   ├── PendeteksiPoseMLKit.kt        ← Deteksi pose ML Kit (untuk overlay)
-│   ├── PengekstrakFitur.kt           ← Ekstrak 34/42 fitur dari pose
-│   ├── PengevaluasiRuleBase.kt       ← Evaluasi berbasis aturan (rule-based)
-│   ├── PenilaiGerakan.kt             ← Pipeline evaluasi lengkap (ML + rule)
+│   ├── PengekstrakFitur.kt           ← Ekstrak fitur geometri dari DataPose
+│   ├── PengevaluasiRuleBase.kt       ← Evaluasi berbasis aturan (rule-based JSON)
+│   ├── PenilaiGerakan.kt             ← Pipeline evaluasi lengkap (MLP global + rule)
 │   └── PenstabilPose.kt              ← Smoothing pose (One Euro Filter)
 │
 ├── 💾 data/ — Database
@@ -150,10 +153,10 @@ app/src/main/java/com/el/silatpro/
 │
 ├── 📦 model/ — Data Models
 │   ├── DataPose.kt                   ← Data class pose (17 keypoint)
-│   ├── GlobalScaler.kt               ← Mean & scale StandardScaler global
 │   ├── HasilEvaluasi.kt              ← Result data class evaluasi
-│   ├── ModelGerakan.kt               ← Model data gerakan
-│   └── ScalerEvaluasi.kt             ← Scaler per gerakan spesifik
+│   ├── ModelGerakan.kt               ← Model data gerakan (untuk Galeri)
+│   ├── ScalerLabelGlobal.kt          ← Mean/scale StandardScaler + label 10 kelas
+│   └── ScalerEvaluasi.kt             ← Scaler per gerakan (legacy, belum dipakai)
 │
 └── 🎨 ui/ — Fragments & Adapters
     ├── beranda/
@@ -187,24 +190,25 @@ Splash Screen
 ActivityMain (Tab Beranda)
     ↓ [Klik kartu gerakan di Galeri]
 ActivityDetailGerakan
-    ↓ [Klik FAB "Mulai Latihan"]
-DialogPilihMode → [Mode Realtime atau Mode Rekam]
+    ↓ [Klik FAB "Mulai Latihan"] — langsung ke Evaluasi (tanpa dialog pilih mode)
     ↓
-ActivityKameraEvaluasi / ActivityKameraRekam
+ActivityKameraEvaluasi
     ↓ [Proses setiap frame kamera]
     │
-    ├── ML Kit (cepat) → Gambar skeleton di overlay
+    ├── ML Kit (tiap frame) → Gambar skeleton di overlay
     │
-    └── YOLOv8x (tiap 500ms) → Evaluasi skor
+    └── YOLOv8n-Pose (tiap 500ms) → Evaluasi skor
             ↓
-        PengekstrakFitur (34 fitur keypoint)
+        Normalizer (body-relative, 34 fitur)
             ↓
         PenilaiGerakan
-        ├── Step 1: Global MLP → Deteksi jenis + sisi gerakan
-        ├── Step 2: Evaluator MLP Spesifik → Skor Benar/Salah
-        └── Step 3: Rule-based Feedback → Feedback per bagian tubuh
+        ├── Step 1: Apply StandardScaler (ScalerLabelGlobal)
+        ├── Step 2: MLPClassifier Global → 10 kelas (70% threshold)
+        ├── Step 3: Validasi gerakan vs target user
+        ├── Step 4: Identifikasi sisi (kanan/kiri dari label)
+        └── Step 5: PengevaluasiRuleBase → Skor + Feedback per fitur
             ↓
-        Skor Gabungan (60% rule-based + 40% ML)
+        Skor Total (rule-based) + Feedback TTS
             ↓
     [Klik "Selesai"]
         ↓
@@ -220,7 +224,7 @@ ActivityMain → [FAB Kamera tengah]
     ↓
 ActivityKlasifikasiGerakan
     ↓ [Tiap 1 detik]
-YOLOv8x → PengekstrakFitur → MesinKlasifikasi
+YOLOv8n-Pose → Normalizer → MesinKlasifikasi → MLPClassifier
     ↓
 Tampilkan label gerakan + confidence (%)
 ```
@@ -230,58 +234,74 @@ Tampilkan label gerakan + confidence (%)
 ## Penjelasan Setiap Komponen
 
 ### 🎯 `PendeteksiPose.kt`
-Deteksi pose menggunakan model **YOLOv8x-Pose** (float16 TFLite).
+Deteksi pose menggunakan model **YOLOv8n-Pose** (float16 TFLite) — lebih ringan dan cepat.
 
 **Flow:**
 1. Bitmap dari kamera → **Letterbox** ke 640×640
 2. Encode pixel ke ByteBuffer (normalisasi 0–1)
 3. Jalankan inferensi → output `[1, 56, 8400]`
-4. Pilih deteksi dengan confidence tertinggi
+4. Pilih deteksi dengan confidence tertinggi (threshold 0.30)
 5. Ekstrak 17 keypoints COCO + reverse letterbox ke koordinat asli
 6. Return `DataPose` (17 `TitikTubuh` dengan x, y, confidence)
 
-**Akselerasi Hardware (prioritas):**
-1. NNAPI Delegate (GPU/DSP/NPU) — untuk HP modern
-2. GPU Delegate (Adreno/Mali) — fallback
-3. XNNPACK CPU — selalu aktif sebagai optimasi
+**Akselerasi Hardware:**
+- XNNPACK CPU — stabil dan digunakan di semua device
+- (NNAPI dinonaktifkan karena menyebabkan crash di beberapa device OPPO/Realme)
 
 ---
 
-### 🤖 `MesinKlasifikasi.kt`
-Klasifikasi gerakan untuk **Mode Open Camera**.
+### 🔄 `Normalizer.kt`
+Normalisasi fitur dari `DataPose` sebelum dimasukkan ke MLP.
+
+**Normalisasi body-relative:**
+```
+center = midpoint(left_hip, right_hip)
+scale  = shoulder_width  (fallback: hip_width)
+x_norm = (x - centerX) / scale
+y_norm = (y - centerY) / scale
+```
+
+**Fungsi:**
+- `bodyRelativeOnly(pose)` → `FloatArray(34)` — 17 keypoints (x,y) ternormalisasi, untuk input MLP Global
+- `normalize(pose)` → `FloatArray(34)` — body-relative + StandardScaler (siap untuk inferensi)
+
+---
+
+### 🤖 `MLPClassifier.kt`
+Klasifikasi gerakan global menggunakan model `GlobalMovement/mlp_global_v8n.tflite`.
 
 **Flow:**
-1. Terima `FloatArray(34)` — 17 keypoints (x, y) ternormalisasi
-2. Terapkan **StandardScaler** (`GlobalScaler.mean`, `GlobalScaler.scale`)
-3. Jalankan model `global_mlp_yolov8x_float16.tflite`
-4. Ambil kelas dengan probabilitas tertinggi
-5. Cek threshold 70% → return label + probabilitas
+1. Terima `FloatArray(34)` — sudah di-scale
+2. Run inference → output 10 probabilitas softmax
+3. Argmax → ambil label dengan probabilitas tertinggi
+4. Threshold 70% → return label + probabilitas, atau "Gerakan tidak dikenali"
 
-**Output:** `Pair<String, Double>?` (label, probabilitas) atau null jika di bawah threshold.
+**Output:** `MLPClassifier.Result(label, confidence, allProbs)`
 
 ---
 
 ### 🏆 `PenilaiGerakan.kt`
-Pipeline evaluasi gerakan untuk **Mode Evaluasi** — ini adalah komponen utama penilaian.
+Pipeline evaluasi gerakan untuk **Mode Evaluasi (Realtime & Rekam)**.
 
-**Pipeline 3 Langkah:**
+**Pipeline Lengkap:**
 
 ```
-Step 1: Global MLP (34 fitur, GlobalScaler)
-    → Deteksi jenis gerakan (Pukulan2Kanan, Tangkisan1Kiri, dll.)
-    → Threshold: 60%
+Step 1: Body-relative normalization (Normalizer)
+    → 34 fitur dari pose
 
-Step 2: Evaluator MLP Spesifik (34 fitur, ScalerEvaluasi per gerakan)
-    → 2 output: probabilitas Benar vs Salah
+Step 2: StandardScaler → MLP Global Inference
+    → Deteksi jenis + sisi gerakan (10 kelas)
     → Threshold: 70%
 
-Step 3: Rule-based (PengevaluasiRuleBase)
-    → Baca model JSON dari assets/movement_models/
-    → Hitung fitur geometri (sudut sendi, jarak kaki/tangan)
-    → Bandingkan terhadap target ± toleransi
-    → Skor per fitur: 100 (dalam toleransi) → turun linear
+Step 3: Validasi gerakan vs target user
+    → Jika tidak cocok → TTS "Terdeteksi X, lakukan Y"
 
-Skor Akhir = 60% Rule-based + 40% ML
+Step 4: Identifikasi sisi (kanan/kiri dari label)
+    → Pilih JSON rule: "<gerakan><sisi>_rule_reference.json"
+
+Step 5: PengevaluasiRuleBase
+    → Evaluasi pose vs aturan geometri dari JSON
+    → Feedback per bagian tubuh
 ```
 
 **Kategori Skor:**
@@ -294,17 +314,19 @@ Skor Akhir = 60% Rule-based + 40% ML
 
 ---
 
-### 📐 `PengekstrakFitur.kt`
-Mengekstrak fitur dari `DataPose` untuk input model ML.
+### 🏋️ `MesinKlasifikasi.kt`
+Wrapper `MLPClassifier` untuk **Mode Open Camera**.
 
-**Normalisasi (sama persis dengan training):**
-```
-shoulder_center = (left_shoulder + right_shoulder) / 2
-hip_center      = (left_hip + right_hip) / 2
-body_center     = (shoulder_center + hip_center) / 2
-body_scale      = max(lebar_bahu, lebar_pinggul)
-normalized_kp   = (keypoint - body_center) / body_scale
-```
+**Flow:**
+- `DataPose` → `Normalizer.normalize()` (body-relative + scaler) → `MLPClassifier.classify()`
+- Return `Pair<String, Double>` (label, confidence)
+
+---
+
+### 📐 `PengekstrakFitur.kt`
+Mengekstrak fitur geometri tambahan dari `DataPose`.
+
+> ⚠ Saat ini digunakan oleh `ActivityKameraRekam` yang sudah tidak aktif dari UI. File ini dapat dievaluasi untuk dihapus bersama `ActivityKameraRekam.kt`.
 
 **Output:**
 - `ekstrak()` → `FloatArray(42)` — 34 keypoints + 8 fitur geometri
@@ -316,7 +338,7 @@ normalized_kp   = (keypoint - body_center) / body_scale
 Evaluasi berbasis aturan yang melengkapi model ML.
 
 **Cara kerja:**
-1. Baca JSON dari `assets/movement_models/<id>.json`
+1. Baca JSON dari `assets/movement_models/<nama>_rule_reference.json`
 2. Hitung fitur geometri dari `DataPose`:
    - Sudut lengan kiri/kanan (bahu–siku–pergelangan)
    - Sudut kaki kiri/kanan (pinggul–lutut–pergelangan kaki)
@@ -377,8 +399,8 @@ Room Database singleton untuk menyimpan riwayat latihan.
 | Kolom | Tipe | Keterangan |
 |-------|------|-----------|
 | `id` | Int (PK) | Auto-increment |
-| `idGerakan` | String | Path asset model |
-| `labelGerakan` | String | Nama gerakan |
+| `idGerakan` | String | Grup ID gerakan (mis. "pukulan_2") |
+| `labelGerakan` | String | Nama gerakan (mis. "Pukulan 2 Kanan") |
 | `skor` | Double | Skor total (0–100) |
 | `kategori` | String | Sangat Baik / Baik / Cukup / Kurang |
 | `skorPerFitur` | String (JSON) | Map skor per fitur geometri |
@@ -395,8 +417,8 @@ Room Database singleton untuk menyimpan riwayat latihan.
 | `pukulan_2` | Pukulan 2 | Pukulan lurus ke samping sejajar bahu |
 | `pukulan_4` | Pukulan 4 | Pukulan menyilang ke arah tulang rusuk |
 | `tangkisan_1` | Tangkisan 1 | Tangkisan tangan terbuka (posisi hormat) |
+| `tangkisan_2` | Tangkisan 2 | Tangkisan silang ke arah samping |
 | `tangkisan_3` | Tangkisan 3 | Tangkisan ke atas melindungi kepala |
-| `tendangan_2` | Tendangan 2 | Tendangan ke arah dada lawan |
 
 Setiap gerakan didukung untuk **sisi kanan dan kiri** (terdeteksi otomatis oleh model global).
 
@@ -408,44 +430,53 @@ Setiap gerakan didukung untuk **sisi kanan dan kiri** (terdeteksi otomatis oleh 
 
 ```
 assets/
-├── yolov8x-pose_float16.tflite       ← Model deteksi pose (semua mode)
+├── yolov8n_pose_float16.tflite       ← Model deteksi pose YOLO (semua mode)
+├── yolov8n_pose_float32.tflite       ← ⚠ Tidak dipakai (bisa dihapus)
 │
 ├── GlobalMovement/
-│   ├── global_mlp_yolov8x_float16.tflite  ← Classifier 10 kelas global
-│   └── global_labels.txt                   ← Label 10 kelas
+│   ├── mlp_global_v8n.tflite         ← Classifier 10 kelas global ✅ AKTIF
+│   ├── global_labels.txt             ← ⚠ Tidak dibaca kode (label ada di ScalerLabelGlobal.kt)
+│   └── labels_global.txt             ← ⚠ Tidak dibaca kode (duplikat global_labels.txt)
 │
-├── Model/
-│   ├── Pukulan2/pukulan2_float16.tflite
-│   ├── Pukulan4/pukulan4_float16.tflite
-│   ├── Tangkisan1/tangkisan1_float16.tflite
-│   ├── Tangkisan3/tangkisan3_float16.tflite
-│   └── Tendangan2/tendangan2_float16.tflite
+├── movement_model_index.json         ← Index gerakan + mapping rule JSON
+├── silat_classification_model.json   ← ⚠ Tidak dibaca kode manapun
 │
 └── movement_models/
-    ├── pukulan_2_kanan.json
-    ├── pukulan_2_kiri.json
-    ├── pukulan_4_kanan.json
-    ├── ... (1 file per gerakan per sisi)
-    └── movement_model_index.json
+    ├── pukulan2kanan_rule_reference.json
+    ├── pukulan2kiri_rule_reference.json
+    ├── pukulan4kanan_rule_reference.json
+    ├── pukulan4kiri_rule_reference.json
+    ├── tangkisan1kanan_rule_reference.json
+    ├── tangkisan1kiri_rule_reference.json
+    ├── tangkisan2kanan_rule_reference.json
+    ├── tangkisan2kiri_rule_reference.json
+    ├── tangkisan3kanan_rule_reference.json
+    └── tangkisan3kiri_rule_reference.json
 ```
 
-### 10 Kelas Global Model
+### 10 Kelas Global Model (`mlp_global_v8n.tflite`)
 
 ```
-PUKULAN2KANAN   PUKULAN2KIRI
-PUKULAN4KANAN   PUKULAN4KIRI
-TANGKISAN1KANAN TANGKISAN1KIRI
-TANGKISAN3KANAN TANGKISAN3KIRI
-TENDANGAN2KANAN TENDANGAN2KIRI
+Index │ Label
+──────┼────────────────
+  0   │ Pukulan2_Kanan
+  1   │ Pukulan2_Kiri
+  2   │ Pukulan4_Kanan
+  3   │ Pukulan4_Kiri
+  4   │ Tangkisan1_Kanan
+  5   │ Tangkisan1_Kiri
+  6   │ Tangkisan2_Kanan
+  7   │ Tangkisan2_Kiri
+  8   │ Tangkisan3_Kanan
+  9   │ Tangkisan3_Kiri
 ```
 
 ### Input/Output Model
 
 | Model | Input | Output |
 |-------|-------|--------|
-| YOLOv8x-Pose | `[1, 640, 640, 3]` Float32 | `[1, 56, 8400]` Float32 |
-| Global MLP | `FloatArray(34)` (scaled) | `FloatArray(10)` softmax |
-| Evaluator MLP | `FloatArray(34)` (scaled) | `FloatArray(2)` [benar, salah] |
+| YOLOv8n-Pose (float16) | `[1, 640, 640, 3]` Float32 | `[1, 56, 8400]` Float32 |
+| Global MLP (v8n) | `FloatArray(34)` (body-rel + scaled) | `FloatArray(10)` softmax |
 
 ---
 
@@ -463,11 +494,8 @@ ActivityMain ─┬─ [Tab Beranda]  FragmenBeranda
               └─ [Tab Tentang]  FragmenTentang
 
 ActivityDetailGerakan
-    └─ [FAB Mulai] → DialogPilihMode
-                         ├─ MODE_REALTIME → ActivityKameraEvaluasi
-                         │                      → ActivityHasilEvaluasi
-                         └─ MODE_REKAM    → ActivityKameraRekam
-                                               → ActivityHasilEvaluasi
+    └─ [FAB Mulai Latihan] → ActivityKameraEvaluasi (langsung, tanpa dialog)
+                                 → ActivityHasilEvaluasi
 ```
 
 ---
@@ -484,12 +512,12 @@ Frame Kamera (ImageProxy)
         │        └─ Gambar skeleton di overlay
         │        └─ Langsung close frame (tidak blocking)
         │
-        └─── [Track 2] YOLO (tiap 500ms - evaluasi / 1000ms - klasifikasi)
+        └─── [Track 2] YOLO (tiap 500ms evaluasi / tiap 1000ms klasifikasi)
                  └─ Salin Bitmap dari frame
                  └─ Rotate sesuai orientasi
-                 └─ YOLOv8x inferensi (background thread)
-                 └─ Ekstrak fitur → Evaluasi skor
-                 └─ Update UI (Main thread)
+                 └─ YOLOv8n-Pose inferensi (background thread)
+                 └─ Normalizer → MLP Global → Rule-based evaluasi
+                 └─ Update UI + TTS (Main thread)
 ```
 
 Desain ini mencegah **drop frame** dan **SIGSEGV** (crash native) karena:
@@ -509,8 +537,7 @@ Desain ini mencegah **drop frame** dan **SIGSEGV** (crash native) karena:
 ### Langkah Build
 
 ```bash
-# Clone atau buka project
-# di Android Studio:
+# Clone atau buka project di Android Studio:
 
 1. File → Open → pilih folder SilatPRObckp/
 2. Tunggu Gradle sync selesai
@@ -550,4 +577,4 @@ Seluruh kode ditulis dengan **konvensi nama Bahasa Indonesia** agar mudah dipaha
 
 ---
 
-*Dokumentasi ini dibuat otomatis berdasarkan analisis source code SilatPRO.*
+*Dokumentasi ini diperbarui berdasarkan analisis source code SilatPRO — versi arsitektur global model (mlp_global_v8n.tflite).*

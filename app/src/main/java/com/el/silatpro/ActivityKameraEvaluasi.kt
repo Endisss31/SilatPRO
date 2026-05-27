@@ -561,38 +561,39 @@ class ActivityKameraEvaluasi : AppCompatActivity(), TextToSpeech.OnInitListener 
 
     /**
      * Ucapkan feedback penting via TTS agar user tidak perlu terus melihat layar.
-     * - Feedback koreksi (ada kata selain 'tepat'): jeda 4 detik
-     * - Feedback 'sudah tepat': jeda 10 detik (tidak spam)
-     * - Tidak mengulang teks yang sama
+     * - Feedback 'sudah tepat': jeda 10 detik (cek dulu agar tidak teroverride koreksi)
+     * - Feedback koreksi: jeda 4 detik, bisa diulang setelah jeda habis
      */
     private fun ucapFeedback(feedbackList: List<String>) {
         if (!ttsAktif || feedbackList.isEmpty()) return
 
         val sekarang = System.currentTimeMillis()
 
-        // Cari teks yang akan diucapkan: koreksi (bukan header nama gerakan) atau pujian
-        val teksKoreksi = feedbackList
-            .drop(1)  // skip baris pertama (nama gerakan + info)
-            .firstOrNull { it.isNotBlank() }
-            ?.trim()
-
+        // Cek pujian dulu (prioritas lebih tinggi dari koreksi)
         val teksPujian = feedbackList
             .firstOrNull { it.contains("sudah tepat", ignoreCase = true) }
             ?.replace(Regex(".*—\\s*"), "")  // ambil bagian setelah "—"
             ?.trim()
 
+        // Koreksi: elemen ke-2 dst yang bukan header gerakan
+        val teksKoreksi = feedbackList
+            .drop(1)  // skip baris pertama (nama gerakan + info)
+            .firstOrNull { it.isNotBlank() }
+            ?.trim()
+
         val (teksUcap, jedaMs) = when {
-            teksKoreksi != null -> Pair(teksKoreksi, JEDA_TTS_KOREKSI_MS)
             teksPujian != null  -> Pair(teksPujian, JEDA_TTS_TEPAT_MS)
+            teksKoreksi != null -> Pair(teksKoreksi, JEDA_TTS_KOREKSI_MS)
             else -> return
         }
 
+        // Cek jeda waktu — izinkan ucap ulang setelah jeda habis (meski teks sama)
         if (sekarang - waktuUcapTerakhir < jedaMs) return
-        if (teksUcap == feedbackTerakhirUcap) return
 
         feedbackTerakhirUcap = teksUcap
         waktuUcapTerakhir = sekarang
         tts?.speak(teksUcap, TextToSpeech.QUEUE_FLUSH, null, null)
+        Log.d("TTS", "Ucap: \"$teksUcap\" (jeda=${jedaMs}ms)")
     }
 
     /**
