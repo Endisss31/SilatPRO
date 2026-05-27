@@ -62,16 +62,14 @@ class FragmenGaleri : Fragment() {
 
     private fun aturChipFilter() {
         binding.chipSemua.setOnClickListener     { setFilter("Semua") }
-        binding.chipPukulan.setOnClickListener   { setFilter("Pukulan") }
-        binding.chipTangkisan.setOnClickListener { setFilter("Tangkisan") }
-        binding.chipTendangan.setOnClickListener { setFilter("Tendangan") }
+        binding.chipPukulan.setOnClickListener   { setFilter("pukulan") }
+        binding.chipTangkisan.setOnClickListener { setFilter("tangkisan") }
     }
 
     private fun setFilter(kategori: String) {
         binding.chipSemua.isChecked     = kategori == "Semua"
-        binding.chipPukulan.isChecked   = kategori == "Pukulan"
-        binding.chipTangkisan.isChecked = kategori == "Tangkisan"
-        binding.chipTendangan.isChecked = kategori == "Tendangan"
+        binding.chipPukulan.isChecked   = kategori == "pukulan"
+        binding.chipTangkisan.isChecked = kategori == "tangkisan"
         filterGerakan(kategori)
     }
 
@@ -114,10 +112,7 @@ class FragmenGaleri : Fragment() {
 
     private fun filterGerakan(kategori: String) {
         val hasil = if (kategori == "Semua") semuaGerakan.toList()
-        else semuaGerakan.filter {
-            it.id.startsWith(kategori, ignoreCase = true) ||
-            it.label.startsWith(kategori, ignoreCase = true)
-        }
+        else semuaGerakan.filter { it.id.startsWith(kategori, ignoreCase = true) }
         adapterGerakan.aturData(hasil)
     }
 

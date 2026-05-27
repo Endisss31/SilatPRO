@@ -17,7 +17,7 @@ import kotlin.math.sqrt
  *   normalized      = (keypoint - body_center) / body_scale
  *
  * Output:
- *   ekstrak()   → FloatArray(34) — untuk model global
+ *   ekstrak()   → FloatArray(42) — untuk model global (34 keypoints + 8 geometric features)
  *   ekstrak39() → FloatArray(39) — untuk model evaluasi spesifik
  */
 class PengekstrakFitur {
@@ -52,20 +52,44 @@ class PengekstrakFitur {
     }
 
     /**
-     * Ekstrak 34 fitur normalisasi (17 keypoint × x,y).
-     * Dipakai untuk model global.
+     * Ekstrak 42 fitur untuk model global:
+     *   0..33  : 17 keypoint normalisasi x,y
+     *   34..41 : 8 fitur geometri (sudut & jarak) ternormalisasi
      */
     fun ekstrak(pose: DataPose): FloatArray {
         val (bodyCenterX, bodyCenterY, bodyScale) = hitungBodyRef(pose)
-        val fitur = FloatArray(34)
+        val fitur = FloatArray(42)
+        
+        // 1. Koordinat keypoint (0..33)
         for (i in 0..16) {
             val t = pose.ambilTitik(i)
             if (t != null && t.konfiden >= MIN_KONFIDEN_KEYPOINT) {
                 fitur[i * 2]     = (t.x - bodyCenterX) / bodyScale
                 fitur[i * 2 + 1] = (t.y - bodyCenterY) / bodyScale
             }
-            // else fitur tetap 0f (konvensi training)
         }
+
+        // 2. Fitur Geometri (34..41)
+        val x = { k: Int -> fitur[k * 2] }
+        val y = { k: Int -> fitur[k * 2 + 1] }
+
+        // Helper untuk sudut / 180
+        fun sudutNorm(a: Int, b: Int, c: Int) = sudut(x(a), y(a), x(b), y(b), x(c), y(c)) / 180f
+
+        fitur[34] = sudutNorm(K_BAHU_KIRI,  K_SIKU_KIRI,  K_WRIST_KIRI)   // angle_left_arm
+        fitur[35] = sudutNorm(K_BAHU_KANAN, K_SIKU_KANAN, K_WRIST_KANAN)  // angle_right_arm
+        fitur[36] = sudutNorm(K_PINGGUL_KIRI,  K_LUTUT_KIRI,  K_ANKLE_KIRI)  // angle_left_leg
+        fitur[37] = sudutNorm(K_PINGGUL_KANAN, K_LUTUT_KANAN, K_ANKLE_KANAN) // angle_right_leg
+        fitur[38] = sudutNorm(K_BAHU_KIRI,  K_PINGGUL_KIRI,  K_LUTUT_KIRI)   // angle_left_waist
+        fitur[39] = sudutNorm(K_BAHU_KANAN, K_PINGGUL_KANAN, K_LUTUT_KANAN)  // angle_right_waist
+        
+        // Jarak (ternormalisasi terhadap bodyScale)
+        val dist = { k1: Int, k2: Int -> sqrt(((x(k1)-x(k2))*(x(k1)-x(k2)) + (y(k1)-y(k2))*(y(k1)-y(k2))).toDouble()).toFloat() }
+        val lebarBahu = dist(K_BAHU_KIRI, K_BAHU_KANAN).coerceAtLeast(0.1f)
+        
+        fitur[40] = dist(K_ANKLE_KIRI, K_ANKLE_KANAN) / lebarBahu  // dist_feet_normalized
+        fitur[41] = dist(K_WRIST_KIRI, K_WRIST_KANAN) / lebarBahu  // dist_hands_normalized
+
         return fitur
     }
 
@@ -79,7 +103,16 @@ class PengekstrakFitur {
      * @param sisi         "kanan" | "kiri"
      */
     fun ekstrak39(pose: DataPose, tipeGerakan: String, sisi: String): FloatArray {
-        val fitur34 = ekstrak(pose)
+        // Model evaluasi spesifik masih menggunakan basis 34 keypoint
+        val (bodyCenterX, bodyCenterY, bodyScale) = hitungBodyRef(pose)
+        val fitur34 = FloatArray(34)
+        for (i in 0..16) {
+            val t = pose.ambilTitik(i)
+            if (t != null && t.konfiden >= MIN_KONFIDEN_KEYPOINT) {
+                fitur34[i * 2]     = (t.x - bodyCenterX) / bodyScale
+                fitur34[i * 2 + 1] = (t.y - bodyCenterY) / bodyScale
+            }
+        }
         val fiturRule = hitungFiturRule(fitur34, tipeGerakan, sisi)
         return fitur34 + fiturRule   // FloatArray(34) + FloatArray(5) = FloatArray(39)
     }

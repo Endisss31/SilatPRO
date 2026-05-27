@@ -75,7 +75,6 @@ class FragmenBeranda : Fragment() {
                 val kategori = when {
                     idGerakan.startsWith("pukulan")   -> "Pukulan"
                     idGerakan.startsWith("tangkisan") -> "Tangkisan"
-                    idGerakan.startsWith("tendangan") -> "Tendangan"
                     else -> idGerakan
                 }
                 kategoriSet.add(kategori)

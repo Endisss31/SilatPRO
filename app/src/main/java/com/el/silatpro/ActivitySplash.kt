@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -35,6 +37,7 @@ class ActivitySplash : AppCompatActivity() {
         binding = ActivityOnBoardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        aturInsets()
         aturOnboarding()
         aturTombol()
     }
@@ -101,6 +104,22 @@ class ActivitySplash : AppCompatActivity() {
     private fun bukaBerandaLangsung() {
         startActivity(Intent(this, ActivityMain::class.java))
         finish()
+    }
+
+    /** Angkat area bawah (indikator + tombol) agar tidak tertutup navigation bar HP */
+    private fun aturInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            // Tambah padding bawah sesuai tinggi nav bar HP (gesture bar / tombol navigasi)
+            // + 36dp base agar tetap ada jarak nyaman di atas nav bar
+            binding.layoutAreaBawah.setPadding(
+                binding.layoutAreaBawah.paddingLeft,
+                binding.layoutAreaBawah.paddingTop,
+                binding.layoutAreaBawah.paddingRight,
+                navBar.bottom + dpKePx(36)
+            )
+            insets
+        }
     }
 
     private fun aturEdgeToEdge() {

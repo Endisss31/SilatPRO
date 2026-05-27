@@ -28,7 +28,6 @@
                 android:layout_height="180dp"
                 android:contentDescription="@string/app_name"
                 android:scaleType="fitCenter"
-                android:background="@drawable/bg_badge_putih"
                 android:src="@drawable/logosilatpro" />
         </LinearLayout>
 

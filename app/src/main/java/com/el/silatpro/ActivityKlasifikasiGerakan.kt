@@ -22,7 +22,6 @@ import com.el.silatpro.ai.PendeteksiPose
 import com.el.silatpro.ai.PendeteksiPoseMLKit
 import com.google.mlkit.vision.common.InputImage
 import kotlinx.coroutines.async
-import com.el.silatpro.ai.PengekstrakFitur
 import com.el.silatpro.ai.PenstabilPose
 import com.el.silatpro.databinding.ActivityKlasifikasiGerakanBinding
 
@@ -42,7 +41,6 @@ class ActivityKlasifikasiGerakan : AppCompatActivity() {
     private lateinit var eksekutorKamera: ExecutorService
     private lateinit var pendeteksi: PendeteksiPose
     private lateinit var pendeteksiMLKit: PendeteksiPoseMLKit
-    private lateinit var pengekstrak: PengekstrakFitur
     private lateinit var penstabilYolo: PenstabilPose
     private lateinit var penstabilMLKit: PenstabilPose
     private lateinit var mesinKlasifikasi: MesinKlasifikasi
@@ -85,21 +83,34 @@ class ActivityKlasifikasiGerakan : AppCompatActivity() {
         setContentView(binding.root)
 
         eksekutorKamera = Executors.newSingleThreadExecutor()
-        pendeteksi = PendeteksiPose(this)
-        pendeteksi.inisialisasi()
+        pendeteksi = PendeteksiPose(this, PendeteksiPose.MODEL_RINGAN)
         pendeteksiMLKit = PendeteksiPoseMLKit()
-        pengekstrak = PengekstrakFitur()
         penstabilYolo = PenstabilPose()
         penstabilMLKit = PenstabilPose(minCutoff = 0.1f, beta = 0.01f, dCutoff = 1.0f)
         mesinKlasifikasi = MesinKlasifikasi(this)
 
-        eksekutorKamera.execute {
-            mesinKlasifikasi.inisialisasi()
-        }
-
         // Atur overlay ke mode fillCenter (sesuai PreviewView kamera klasifikasi)
         binding.overlayPose.setModeFillCenter(true)
         binding.overlayPose.setKameraDepan(false)
+
+        // Tampilkan status loading
+        binding.txtGerakanTerdeteksi.text = "Memuat model..."
+        binding.txtKonfiden.text = ""
+
+        // Inisialisasi model di background — JANGAN di main thread
+        lifecycleScope.launch(Dispatchers.Default) {
+            pendeteksi.inisialisasi()
+            val mlpOk = mesinKlasifikasi.inisialisasi()
+            withContext(Dispatchers.Main) {
+                if (mlpOk) {
+                    binding.txtGerakanTerdeteksi.text = getString(R.string.kamera_mendeteksi)
+                    binding.txtKonfiden.text = "Arahkan kamera ke tubuh"
+                } else {
+                    binding.txtGerakanTerdeteksi.text = "⚠ Gagal memuat model klasifikasi"
+                    binding.txtKonfiden.text = "Periksa file model di assets"
+                }
+            }
+        }
 
         // Fungsi tombol
         binding.btnKembali.setOnClickListener { finish() }
@@ -221,21 +232,17 @@ class ActivityKlasifikasiGerakan : AppCompatActivity() {
                         val poseYoloStabil = poseYolo?.let { penstabilYolo.stabilkan(it) }
 
                         withContext(Dispatchers.Main) {
-                            if (aktif && poseYoloStabil != null && pengekstrak.apakahLayakDiklasifikasi(poseYoloStabil)) {
-                                val fitur = pengekstrak.ekstrak(poseYoloStabil)
-                                val hasil = mesinKlasifikasi.klasifikasi(fitur)
+                            if (aktif && poseYoloStabil != null) {
+                                // Langsung kirim DataPose ke MesinKlasifikasi (tanpa PengekstrakFitur)
+                                val hasil = mesinKlasifikasi.klasifikasi(poseYoloStabil)
 
                                 if (hasil != null) {
                                     binding.txtGerakanTerdeteksi.text = hasil.first
                                     binding.txtKonfiden.text = String.format("Konfiden: %d%%", (hasil.second * 100).toInt())
                                 } else {
                                     binding.txtGerakanTerdeteksi.text = getString(R.string.kamera_mendeteksi)
-                                    binding.txtKonfiden.text = ""
+                                    binding.txtKonfiden.text = "Posisikan tubuh sepenuhnya"
                                 }
-                            } else if (aktif && poseYoloStabil != null) {
-                                // Pose terdeteksi tapi keypoint tidak cukup valid
-                                binding.txtGerakanTerdeteksi.text = "Pose tidak terdeteksi dengan baik"
-                                binding.txtKonfiden.text = ""
                             } else if (aktif) {
                                 binding.txtGerakanTerdeteksi.text = getString(R.string.kamera_mendeteksi)
                                 binding.txtKonfiden.text = "Posisikan tubuh sepenuhnya"

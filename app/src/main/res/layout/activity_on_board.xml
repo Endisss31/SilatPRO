@@ -4,7 +4,7 @@
     android:id="@+id/utama"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_onboarding_premium"
+    android:background="@drawable/bg_splash_premium"
     android:orientation="vertical">
 
     <!-- ViewPager Konten Onboarding -->
@@ -16,6 +16,7 @@
 
     <!-- Area Bawah: Indikator + Tombol -->
     <LinearLayout
+        android:id="@+id/layoutAreaBawah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

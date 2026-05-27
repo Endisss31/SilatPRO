@@ -34,8 +34,18 @@ android {
     buildFeatures {
         viewBinding true
     }
-    aaptOptions {
-        noCompress "tflite"
+    androidResources {
+        noCompress 'tflite'
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            force "org.tensorflow:tensorflow-lite:2.17.0"
+            force "org.tensorflow:tensorflow-lite-gpu:2.17.0"
+            force "org.tensorflow:tensorflow-lite-api:2.17.0"
+        }
+        // Buang tensorflow-lite-api karena isinya sudah ada di litert-api (bawaan 2.17.0)
+        exclude group: 'org.tensorflow', module: 'tensorflow-lite-api'
     }
 }
 
@@ -72,9 +82,9 @@ dependencies {
     implementation libs.tflite.gpu
 
     // Room
-    implementation libs.room.runtime
-    implementation libs.room.ktx
-    kapt libs.room.compiler
+    implementation("androidx.room:room-runtime:2.7.0")
+    implementation("androidx.room:room-ktx:2.7.0")
+    kapt("androidx.room:room-compiler:2.7.0")
 
     // ViewPager2
     implementation libs.viewpager2
@@ -84,7 +94,10 @@ dependencies {
 
     // Coroutines
     implementation libs.coroutines.android
-    implementation libs.mlkit.pose
+    implementation(libs.mlkit.pose) {
+        exclude group: 'org.tensorflow', module: 'tensorflow-lite-api'
+        exclude group: 'org.tensorflow', module: 'tensorflow-lite'
+    }
 
     // Test
     testImplementation libs.junit

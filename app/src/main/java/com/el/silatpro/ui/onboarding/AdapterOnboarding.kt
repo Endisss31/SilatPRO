@@ -24,7 +24,7 @@ class AdapterOnboarding : RecyclerView.Adapter<AdapterOnboarding.HalViewHolder>(
         HalamanOnboarding(
             judul = "Selamat Datang di SilatPRO",
             deskripsi = "Aplikasi analisis gerakan Pencak Silat berbasis AI.",
-            ikonResId = R.drawable.logo_silatpro_tanpa_text
+            ikonResId = R.drawable.logosilatpro
         ),
         HalamanOnboarding(
             judul = "Tujuan",

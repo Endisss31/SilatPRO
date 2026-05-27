@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,7 +18,6 @@ import androidx.camera.core.ImageProxy
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.el.silatpro.ai.PendeteksiPose
-import com.el.silatpro.ai.PengekstrakFitur
 import com.el.silatpro.ai.PenilaiGerakan
 import com.el.silatpro.ai.PenstabilPose
 import com.el.silatpro.data.BasisDataAplikasi
@@ -30,6 +30,7 @@ import com.google.gson.Gson
 import com.el.silatpro.ai.PendeteksiPoseMLKit
 import com.google.mlkit.vision.common.InputImage
 import kotlinx.coroutines.async
+import java.util.Locale
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,7 +38,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
-class ActivityKameraEvaluasi : AppCompatActivity() {
+class ActivityKameraEvaluasi : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var binding: ActivityKameraEvaluasiBinding
 
@@ -45,7 +46,6 @@ class ActivityKameraEvaluasi : AppCompatActivity() {
     // ── AI & Evaluasi ─────────────────────────────────────────────
     private lateinit var pendeteksi: PendeteksiPose
     private lateinit var pendeteksiMLKit: PendeteksiPoseMLKit
-    private lateinit var pengekstrak: PengekstrakFitur
     private lateinit var penilai: PenilaiGerakan
     private lateinit var penstabilYolo: PenstabilPose
     private lateinit var penstabilMLKit: PenstabilPose
@@ -65,14 +65,25 @@ class ActivityKameraEvaluasi : AppCompatActivity() {
     @Volatile private var sedangAmbilFoto = false
     private var waktuEvaluasiTerakhir = 0L
 
+    // ── Text-to-Speech ────────────────────────────────────────────
+    private var tts: TextToSpeech? = null
+    private var ttsAktif = false
+    private var feedbackTerakhirUcap = ""
+    private var waktuUcapTerakhir = 0L
+    private var waktuUcapSalah = 0L          // jeda khusus untuk gerakan salah
+
     companion object {
-        // Interval 500ms = max ~2 evaluasi/detik, cukup responsif untuk penilaian gerakan
-        private const val INTERVAL_EVALUASI_MS = 500L
+        // Evaluasi max 2x/detik, cukup responsif
+        private const val INTERVAL_EVALUASI_MS  = 500L
+        // Jeda minimal antar ucapan TTS
+        private const val JEDA_TTS_KOREKSI_MS   = 4000L   // koreksi: 4 detik
+        private const val JEDA_TTS_TEPAT_MS     = 10000L  // sudah tepat: 10 detik
+        private const val JEDA_TTS_SALAH_MS     = 5000L   // gerakan salah: 5 detik
     }
 
     // ── State Sesi ────────────────────────────────────────────────
-    private var assetModel = ""
-    private var assetRuleJson = ""   // nama file JSON rule-based (contoh: "pukulan_2_kanan.json")
+    /** ID grup gerakan yang dipilih user, contoh: "pukulan_2" */
+    private var idGrupGerakan = ""
     private var waktuMulai: Long = 0
     private var skorTertinggi: Double = 0.0
     private var hasilTerbaik: HasilEvaluasi? = null
@@ -100,9 +111,11 @@ class ActivityKameraEvaluasi : AppCompatActivity() {
         binding = ActivityKameraEvaluasiBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        assetModel = intent.getStringExtra("ASSET_MODEL") ?: ""
-        assetRuleJson = intent.getStringExtra("ASSET_RULE_JSON") ?: ""
+        idGrupGerakan = intent.getStringExtra("ID_GRUP_GERAKAN") ?: ""
         waktuMulai = System.currentTimeMillis()
+
+        // Inisialisasi Text-to-Speech (Bahasa Indonesia)
+        tts = TextToSpeech(this, this)
 
         inisialisasiAI()
         inisialisasiManajerKamera()
@@ -115,6 +128,28 @@ class ActivityKameraEvaluasi : AppCompatActivity() {
         // Tampilkan popup ketentuan penggunaan sebelum kamera dimulai
         DialogKetentuanKamera.tampilkan(this, kunci = "evaluasi") {
             periksaIzinKamera()
+        }
+    }
+
+    /** Callback inisialisasi TextToSpeech */
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            // Coba Bahasa Indonesia, fallback ke English jika tidak tersedia
+            val hasilId = tts?.setLanguage(Locale("id", "ID"))
+            ttsAktif = hasilId != TextToSpeech.LANG_MISSING_DATA &&
+                       hasilId != TextToSpeech.LANG_NOT_SUPPORTED
+            if (!ttsAktif) {
+                // Fallback: coba English
+                tts?.setLanguage(Locale.ENGLISH)
+                ttsAktif = true
+                Log.w("TTS", "Bahasa Indonesia tidak tersedia, pakai English")
+            }
+            tts?.setSpeechRate(0.9f)   // sedikit lebih lambat agar jelas
+            tts?.setPitch(1.0f)
+            Log.d("TTS", "TTS siap: ttsAktif=$ttsAktif")
+        } else {
+            Log.e("TTS", "Gagal inisialisasi TTS: status=$status")
+            ttsAktif = false
         }
     }
 
@@ -140,6 +175,10 @@ class ActivityKameraEvaluasi : AppCompatActivity() {
         pendeteksiMLKit.tutup()
         penilai.tutup()
         manajerKamera.lepas()
+        // Hentikan dan bebaskan TTS
+        tts?.stop()
+        tts?.shutdown()
+        tts = null
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -147,21 +186,23 @@ class ActivityKameraEvaluasi : AppCompatActivity() {
     // ─────────────────────────────────────────────────────────────
 
     private fun inisialisasiAI() {
-        pendeteksi = PendeteksiPose(this)
+        // Mode realtime: pakai YOLOv8x agar konsisten dengan model evaluasi baru.
+        // Keypoints 34 (normalized) yang dihasilkan tetap konsisten dengan training
+        // karena normalisasi body-relative tidak bergantung pada model YOLO yang digunakan.
+        pendeteksi = PendeteksiPose(this, PendeteksiPose.MODEL_RINGAN)
         pendeteksi.inisialisasi()
         pendeteksiMLKit = PendeteksiPoseMLKit()
-        pengekstrak = PengekstrakFitur()
         penilai = PenilaiGerakan(this)
         penstabilYolo = PenstabilPose()
         penstabilMLKit = PenstabilPose(minCutoff = 0.1f, beta = 0.01f, dCutoff = 1.0f)
 
-        // Muat model TFLite + rule-based JSON di background thread
+        // Muat model global di background thread
         lifecycleScope.launch(Dispatchers.IO) {
-            if (assetModel.isNotEmpty()) {
-                val dimuat = penilai.muatModel(assetModel, assetRuleJson)
+            if (idGrupGerakan.isNotEmpty()) {
+                val dimuat = penilai.muatModel(idGrupGerakan)
                 if (!dimuat) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@ActivityKameraEvaluasi, "Gagal memuat model acuan", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ActivityKameraEvaluasi, "Gagal memuat model global", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -341,11 +382,10 @@ class ActivityKameraEvaluasi : AppCompatActivity() {
     }
 
     private fun evaluasiPose(pose: DataPose) {
-        if (pose.apakahValid() && assetModel.isNotEmpty()) {
-            val fitur = pengekstrak.ekstrak(pose)   // 34 fitur untuk pipeline evaluasi
+        if (pose.apakahValid() && idGrupGerakan.isNotEmpty()) {
             val durasi = System.currentTimeMillis() - waktuMulai
-            // pose diteruskan agar PenilaiGerakan dapat membangun 39 fitur + rule-based feedback
-            val hasil = penilai.evaluasi(fitur, durasi, assetModel, pose)
+            // Kirim DataPose langsung — PenilaiGerakan pakai Normalizer internal
+            val hasil  = penilai.evaluasi(FloatArray(0), durasi, pose)
 
             binding.txtNamaGerakan.text = hasil.labelGerakan
             binding.txtSkorLangsung.text = hasil.skorTotal.toInt().toString()
@@ -354,6 +394,19 @@ class ActivityKameraEvaluasi : AppCompatActivity() {
             val feedbackDisplay = hasil.feedbackList.joinToString("\n")
             binding.txtAlertPeringatan.text = feedbackDisplay
             binding.txtAlertPeringatan.visibility = android.view.View.VISIBLE
+
+            // Ucapkan feedback via TTS
+            when {
+                hasil.gerakanSalah -> {
+                    // Ekstrak nama gerakan yang terdeteksi dari pesan
+                    // Format pesan: "Terdeteksi: Pukulan 2 Kiri. Lakukan Pukulan 2"
+                    val namaDeteksi = hasil.gerakanTerdeteksi
+                        .replace("_", " ")
+                        .replace(Regex("(\\D)(\\d)")) { "${it.groupValues[1]} ${it.groupValues[2]}" }
+                    ucapGerakanSalah(namaDeteksi)
+                }
+                else -> ucapFeedback(hasil.feedbackList)
+            }
 
             // ── Warna & pesan status berdasarkan kondisi ──────────────────
             val warnaTeks: Int
@@ -481,7 +534,7 @@ class ActivityKameraEvaluasi : AppCompatActivity() {
             val gson = Gson()
 
             val riwayat = EntitasRiwayatLatihan(
-                idGerakan = assetModel,
+                idGerakan = idGrupGerakan,
                 labelGerakan = hasilTerbaik!!.labelGerakan,
                 skor = skorTertinggi,
                 kategori = hasilTerbaik!!.kategori,
@@ -504,5 +557,56 @@ class ActivityKameraEvaluasi : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    /**
+     * Ucapkan feedback penting via TTS agar user tidak perlu terus melihat layar.
+     * - Feedback koreksi (ada kata selain 'tepat'): jeda 4 detik
+     * - Feedback 'sudah tepat': jeda 10 detik (tidak spam)
+     * - Tidak mengulang teks yang sama
+     */
+    private fun ucapFeedback(feedbackList: List<String>) {
+        if (!ttsAktif || feedbackList.isEmpty()) return
+
+        val sekarang = System.currentTimeMillis()
+
+        // Cari teks yang akan diucapkan: koreksi (bukan header nama gerakan) atau pujian
+        val teksKoreksi = feedbackList
+            .drop(1)  // skip baris pertama (nama gerakan + info)
+            .firstOrNull { it.isNotBlank() }
+            ?.trim()
+
+        val teksPujian = feedbackList
+            .firstOrNull { it.contains("sudah tepat", ignoreCase = true) }
+            ?.replace(Regex(".*—\\s*"), "")  // ambil bagian setelah "—"
+            ?.trim()
+
+        val (teksUcap, jedaMs) = when {
+            teksKoreksi != null -> Pair(teksKoreksi, JEDA_TTS_KOREKSI_MS)
+            teksPujian != null  -> Pair(teksPujian, JEDA_TTS_TEPAT_MS)
+            else -> return
+        }
+
+        if (sekarang - waktuUcapTerakhir < jedaMs) return
+        if (teksUcap == feedbackTerakhirUcap) return
+
+        feedbackTerakhirUcap = teksUcap
+        waktuUcapTerakhir = sekarang
+        tts?.speak(teksUcap, TextToSpeech.QUEUE_FLUSH, null, null)
+    }
+
+    /**
+     * TTS khusus gerakan salah — ucapkan "Gerakan salah, terdeteksi [nama]".
+     * Jeda 5 detik agar tidak spam saat user sedang berpindah gerakan.
+     */
+    private fun ucapGerakanSalah(namaGerakan: String) {
+        if (!ttsAktif) return
+        val sekarang = System.currentTimeMillis()
+        if (sekarang - waktuUcapSalah < JEDA_TTS_SALAH_MS) return
+
+        waktuUcapSalah = sekarang
+        val teks = if (namaGerakan.isNotBlank()) "Gerakan salah, terdeteksi $namaGerakan"
+                   else "Gerakan salah"
+        tts?.speak(teks, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 }

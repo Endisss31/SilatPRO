@@ -15,11 +15,17 @@ import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 
 /**
- * Mendeteksi pose tubuh menggunakan model YOLOv8n-Pose TFLite.
+ * Mendeteksi pose tubuh menggunakan model YOLOv8-Pose TFLite.
  * Input: Bitmap → [1, 640, 640, 3] Float32
  * Output: [1, 56, 8400] Float32
+ *
+ * @param konteks Android context
+ * @param namaModel Nama file model di assets. Mode realtime memakai YOLOv8n (hemat RAM).
  */
-class PendeteksiPose(private val konteks: Context) {
+class PendeteksiPose(
+    private val konteks: Context,
+    private val namaModel: String = MODEL_RINGAN
+) {
 
     private var interpreter: Interpreter? = null
     private var sudahSiap = false
@@ -30,7 +36,10 @@ class PendeteksiPose(private val konteks: Context) {
         private const val UKURAN_INPUT = 640
         private const val JUMLAH_HASIL = 8400
         private const val JUMLAH_FITUR = 56  // 4(box) + 1(conf) + 17*3(kpts)
-        private const val NAMA_MODEL = "yolov8n-pose_float16.tflite"
+        /** Model ringan YOLOv8n — dipakai untuk evaluasi realtime, hemat RAM & lebih cepat. */
+        const val MODEL_RINGAN  = "yolov8n_pose_float16.tflite"
+        /** Alias MODEL_AKURAT → sama dengan MODEL_RINGAN (mode rekam sudah dihapus). */
+        const val MODEL_AKURAT  = "yolov8n_pose_float16.tflite"
         private const val AMBANG_KONFIDEN = 0.30f  // sesuai training conf=0.3
     }
 
@@ -82,47 +91,22 @@ class PendeteksiPose(private val konteks: Context) {
 
     /**
      * Inisialisasi model TFLite dengan akselerasi hardware.
-     * - 4 CPU threads untuk inferensi paralel
+     * - 2 CPU threads (YOLOv8n ringan, tidak perlu 4 thread)
      * - NNAPI delegate: memanfaatkan GPU/DSP/NPU jika tersedia di device
      */
     fun inisialisasi() {
         try {
             val opsi = Interpreter.Options().apply {
                 setNumThreads(4)
-                // Prioritas 1: NNAPI (GPU/DSP/NPU) — terbaik untuk kebanyakan HP Android modern
-                var nnApiAktif = false
-                try {
-                    addDelegate(
-                        org.tensorflow.lite.nnapi.NnApiDelegate(
-                            org.tensorflow.lite.nnapi.NnApiDelegate.Options().apply {
-                                executionPreference =
-                                    org.tensorflow.lite.nnapi.NnApiDelegate.Options.EXECUTION_PREFERENCE_FAST_SINGLE_ANSWER
-                                allowFp16 = true
-                            }
-                        )
-                    )
-                    nnApiAktif = true
-                    Log.d(TAG, "NNAPI delegate aktif (GPU/DSP/NPU)")
-                } catch (e: Exception) {
-                    Log.w(TAG, "NNAPI tidak tersedia: ${e.message}")
-                }
-                // Prioritas 2: GPU delegate — untuk HP dengan Adreno/Mali tanpa NNAPI
-                if (!nnApiAktif) {
-                    try {
-                        addDelegate(org.tensorflow.lite.gpu.GpuDelegate())
-                        Log.d(TAG, "GPU delegate aktif (Adreno/Mali)")
-                    } catch (e: Exception) {
-                        Log.w(TAG, "GPU delegate tidak tersedia, fallback ke CPU: ${e.message}")
-                    }
-                }
-                // XNNPACK selalu aktif sebagai optimasi CPU
+                // Gunakan XNNPACK — akselerasi CPU yang stabil di semua device
+                // NNAPI dinonaktifkan karena menyebabkan SIGABRT di beberapa device OPPO/Realme
                 setUseXNNPACK(true)
             }
-            interpreter = Interpreter(muatModelDariAset(konteks, NAMA_MODEL), opsi)
+            interpreter = Interpreter(muatModelDariAset(konteks, namaModel), opsi)
             sudahSiap = true
-            Log.d(TAG, "Model YOLOv8 Pose berhasil dimuat dengan akselerasi hardware")
+            Log.d(TAG, "YOLOv8n pose model siap (CPU+XNNPACK): $namaModel")
         } catch (e: Exception) {
-            Log.e(TAG, "Gagal memuat model: ${e.message}")
+            Log.e(TAG, "Gagal memuat model pose: ${e.message}")
             sudahSiap = false
         }
     }
