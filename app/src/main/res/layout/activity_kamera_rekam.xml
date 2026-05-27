@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout Kamera Mode Rekam — Preview Bersih (Tanpa Skeleton Overlay)
+    ─────────────────────────────────────────────────────────────────
+    Saat merekam: hanya tampilan preview kamera biasa.
+    Skeleton overlay TIDAK ADA — evaluasi dilakukan offline setelah rekaman selesai.
+
+    State UI:
+    • SIAP          → tombol "Mulai Rekam" aktif, badge YOLOv8x terlihat
+    • HITUNG_MUNDUR → txtCountdown tampil di tengah (3→2→1)
+    • MEREKAM       → layoutProgressRekam muncul (dot merah berkedip + timer + progress bar)
+    • MEMPROSES     → layoutMemproses muncul (spinner + teks progress)
+    • SELESAI       → kembali ke SIAP atau langsung ke HasilEvaluasi
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <!-- Layer 1: Preview Kamera Full Screen (tanpa overlay apapun) -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewKamera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:implementationMode="compatible"
+        app:scaleType="fillCenter" />
+
+    <!-- Layer 2: Gradasi atas -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_gravity="top"
+        android:background="@drawable/gradasi_atas_kamera" />
+
+    <!-- Layer 3: Header — Tombol Kembali + Nama Gerakan + Badge -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnKembali"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_bulat_hitam_transparan"
+            android:contentDescription="Kembali"
+            android:src="@drawable/ic_panah_kiri"
+            android:padding="10dp"
+            app:tint="@color/putih" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtNamaGerakan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/putih"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:shadowColor="#99000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="4" />
+
+            <TextView
+                android:id="@+id/txtStatusRekam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Siap merekam..."
+                android:textColor="#00CCFF"
+                android:textSize="12sp"
+                android:shadowColor="#99000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3" />
+        </LinearLayout>
+
+        <!-- Badge model yang digunakan -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_badge_kuning"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:text="YOLOv8x"
+            android:textColor="#1A1A2E"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Layer 4: Overlay gelap saat countdown (biar angka kontras) -->
+    <View
+        android:id="@+id/overlayCountdown"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#88000000"
+        android:visibility="gone" />
+
+    <!-- Layer 4b: Countdown angka di tengah layar (STATE_HITUNG_MUNDUR) -->
+    <LinearLayout
+        android:id="@+id/layoutCountdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bersiap..."
+            android:textColor="#CCFFFFFF"
+            android:textSize="16sp"
+            android:letterSpacing="0.15"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/txtCountdown"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:background="@drawable/bg_tombol_utama"
+            android:gravity="center"
+            android:text="3"
+            android:textColor="#FFFFFF"
+            android:textSize="80sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Layer 5: Overlay memproses (STATE_MEMPROSES) -->
+    <LinearLayout
+        android:id="@+id/layoutMemproses"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC000000"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progressMemproses"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:indeterminate="true"
+            android:indeterminateTint="#4488FF" />
+
+        <TextView
+            android:id="@+id/txtProgressMemproses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Menganalisis gerakan..."
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSubProgressMemproses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Memproses frame 0 / 0"
+            android:textColor="#AAAAAA"
+            android:textSize="13sp" />
+
+        <!-- Info: model yang dipakai saat proses -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_badge_kuning"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:text="YOLOv8x — Presisi Tinggi"
+            android:textColor="#1A1A2E"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Layer 6: Gradasi bawah -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/gradasi_bawah_kamera" />
+
+    <!-- Layer 7: Progress rekaman (STATE_MEREKAM) -->
+    <LinearLayout
+        android:id="@+id/layoutProgressRekam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="148dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <!-- Baris: titik merah + sisa waktu -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp">
+
+            <View
+                android:id="@+id/dotRekam"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:background="@drawable/dot_aktif"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/txtSisaWaktu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5.0 dtk"
+                android:textColor="#FF4444"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Progress bar rekaman 0→100% -->
+        <ProgressBar
+            android:id="@+id/progressRekam"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:max="100"
+            android:progress="0"
+            android:progressTint="#FF4444"
+            android:progressBackgroundTint="#333333" />
+    </LinearLayout>
+
+    <!-- Layer 8: Tombol bawah -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="28dp"
+        android:paddingTop="12dp">
+
+        <!-- Tombol Mulai Rekam -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMulaiRekam"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:backgroundTint="#FF4444"
+            android:text="● Mulai Rekam"
+            android:textColor="@color/putih"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="28dp" />
+
+        <!-- Tombol Switch Kamera (hanya aktif saat SIAP) -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnSwitchKamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Switch Kamera"
+            android:src="@drawable/ic_kamera"
+            app:backgroundTint="#BB000000"
+            app:fabSize="normal"
+            app:tint="@color/putih" />
+    </LinearLayout>
+
+</FrameLayout>
