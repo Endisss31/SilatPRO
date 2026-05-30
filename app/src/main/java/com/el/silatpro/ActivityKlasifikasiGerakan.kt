@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Size
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,13 +29,14 @@ import com.el.silatpro.databinding.ActivityKlasifikasiGerakanBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 /**
  * Activity Kamera Terbuka - mode deteksi global tanpa evaluasi spesifik.
  */
-class ActivityKlasifikasiGerakan : AppCompatActivity() {
+class ActivityKlasifikasiGerakan : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var binding: ActivityKlasifikasiGerakanBinding
 
@@ -44,6 +46,13 @@ class ActivityKlasifikasiGerakan : AppCompatActivity() {
     private lateinit var penstabilYolo: PenstabilPose
     private lateinit var penstabilMLKit: PenstabilPose
     private lateinit var mesinKlasifikasi: MesinKlasifikasi
+
+    // ── Text-to-Speech ────────────────────────────────────────────
+    private var tts: TextToSpeech? = null
+    private var ttsAktif = false
+    private var gerakanTerakhirDiucapkan = ""
+    private var waktuUcapanTerakhir = 0L
+    private val COOLDOWN_TTS_MS = 3000L   // Minimal 3 detik sebelum ucap ulang gerakan sama
 
     private var providerKamera: ProcessCameraProvider? = null
     @Volatile private var aktif = false
@@ -88,6 +97,9 @@ class ActivityKlasifikasiGerakan : AppCompatActivity() {
         penstabilYolo = PenstabilPose()
         penstabilMLKit = PenstabilPose(minCutoff = 0.1f, beta = 0.01f, dCutoff = 1.0f)
         mesinKlasifikasi = MesinKlasifikasi(this)
+
+        // Inisialisasi Text-to-Speech dengan bahasa Indonesia
+        tts = TextToSpeech(this, this)
 
         // Atur overlay ke mode fillCenter (sesuai PreviewView kamera klasifikasi)
         binding.overlayPose.setModeFillCenter(true)
@@ -154,7 +166,61 @@ class ActivityKlasifikasiGerakan : AppCompatActivity() {
         mesinKlasifikasi.tutup()
         yoloBitmapCache?.recycle()
         yoloBitmapCache = null
+        // Matikan TTS
+        tts?.stop()
+        tts?.shutdown()
+        tts = null
         super.onDestroy()
+    }
+
+    /**
+     * Callback inisialisasi TTS.
+     * Coba set bahasa Indonesia dulu, fallback ke English jika tidak tersedia.
+     */
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            val hasilId = tts?.setLanguage(Locale("id", "ID"))
+            ttsAktif = if (hasilId == TextToSpeech.LANG_MISSING_DATA ||
+                hasilId == TextToSpeech.LANG_NOT_SUPPORTED
+            ) {
+                // Fallback ke English jika bahasa Indonesia tidak tersedia
+                tts?.setLanguage(Locale.ENGLISH)
+                true
+            } else {
+                true
+            }
+            // Atur kecepatan bicara agar terdengar natural
+            tts?.setSpeechRate(0.95f)
+            tts?.setPitch(1.0f)
+        }
+    }
+
+    /**
+     * Ucapkan nama gerakan melalui TTS.
+     * - Hanya bicara jika gerakan berbeda ATAU cooldown sudah lewat.
+     * - Tidak bicara untuk teks status sistem ("Mendeteksi...", "Posisikan tubuh", dll).
+     */
+    private fun ucapkanGerakan(namaGerakan: String) {
+        if (!ttsAktif) return
+
+        // Abaikan teks status bukan gerakan
+        val teksStatus = listOf(
+            getString(R.string.kamera_mendeteksi),
+            "Posisikan tubuh sepenuhnya",
+            "Arahkan kamera ke tubuh",
+            "Memuat model..."
+        )
+        if (teksStatus.any { namaGerakan.contains(it, ignoreCase = true) }) return
+
+        val sekarang = System.currentTimeMillis()
+        val gerakanBerubah = namaGerakan != gerakanTerakhirDiucapkan
+        val cooldownLewat = sekarang - waktuUcapanTerakhir >= COOLDOWN_TTS_MS
+
+        if (gerakanBerubah || cooldownLewat) {
+            gerakanTerakhirDiucapkan = namaGerakan
+            waktuUcapanTerakhir = sekarang
+            tts?.speak(namaGerakan, TextToSpeech.QUEUE_FLUSH, null, "gerakan_tts")
+        }
     }
 
     private fun periksaIzinKamera() {
@@ -239,6 +305,8 @@ class ActivityKlasifikasiGerakan : AppCompatActivity() {
                                 if (hasil != null) {
                                     binding.txtGerakanTerdeteksi.text = hasil.first
                                     binding.txtKonfiden.text = String.format("Konfiden: %d%%", (hasil.second * 100).toInt())
+                                    // Ucapkan nama gerakan yang terdeteksi via TTS
+                                    ucapkanGerakan(hasil.first)
                                 } else {
                                     binding.txtGerakanTerdeteksi.text = getString(R.string.kamera_mendeteksi)
                                     binding.txtKonfiden.text = "Posisikan tubuh sepenuhnya"

@@ -5,12 +5,6 @@ import android.util.Log
 import com.el.silatpro.model.DataPose
 import com.el.silatpro.model.ScalerLabelGlobal
 
-/**
- * MesinKlasifikasi — wrapper untuk ActivityKlasifikasiGerakan.
- *
- * Pipeline:
- *   DataPose → Normalizer (body-relative + scaler) → MLPClassifier → label
- */
 class MesinKlasifikasi(context: Context) {
 
     companion object {

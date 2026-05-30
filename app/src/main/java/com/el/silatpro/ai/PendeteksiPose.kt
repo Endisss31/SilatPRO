@@ -36,9 +36,7 @@ class PendeteksiPose(
         private const val UKURAN_INPUT = 640
         private const val JUMLAH_HASIL = 8400
         private const val JUMLAH_FITUR = 56  // 4(box) + 1(conf) + 17*3(kpts)
-        /** Model ringan YOLOv8n — dipakai untuk evaluasi realtime, hemat RAM & lebih cepat. */
         const val MODEL_RINGAN  = "yolov8n_pose_float16.tflite"
-        /** Alias MODEL_AKURAT → sama dengan MODEL_RINGAN (mode rekam sudah dihapus). */
         const val MODEL_AKURAT  = "yolov8n_pose_float16.tflite"
         private const val AMBANG_KONFIDEN = 0.30f  // sesuai training conf=0.3
     }

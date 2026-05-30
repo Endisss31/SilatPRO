@@ -6,20 +6,6 @@ import com.el.silatpro.model.ScalerLabelGlobal
 import org.tensorflow.lite.Interpreter
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-
-/**
- * MLPClassifier — global movement classification.
- *
- * Input : FloatArray(34) — sudah di-scale oleh Normalizer
- * Output: label kelas + confidence
- *
- * Label urutan (HARUS sama dengan training):
- *   0  Pukulan2_Kanan    5  Tangkisan1_Kiri
- *   1  Pukulan2_Kiri     6  Tangkisan2_Kanan
- *   2  Pukulan4_Kanan    7  Tangkisan2_Kiri
- *   3  Pukulan4_Kiri     8  Tangkisan3_Kanan
- *   4  Tangkisan1_Kanan  9  Tangkisan3_Kiri
- */
 class MLPClassifier(private val context: Context) {
 
     companion object {
